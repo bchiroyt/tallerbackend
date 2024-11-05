@@ -16,8 +16,10 @@ import proveedorRouter from './routes/proveedor.routes.js';
 import comprasRouter from './routes/compra.routes.js'; 
 import clientesRouter from './routes/cliente.routes.js'
 import mantenimientoRouter from './routes/mantenimineto.routes.js';
-import historialRouter from './routes/historial.routes.js';
+import servicioRouter from './routes/servicio.routes.js';
 import ventasRouter from './routes/venta.routes.js'; 
+import cajaRouter from './routes/caja.routes.js';
+import reembolsoRouter from './routes/reembolso.routes.js'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -43,8 +45,10 @@ app.use('/', proveedorRouter);
 app.use('/', comprasRouter);
 app.use('/', clientesRouter);
 app.use('/', mantenimientoRouter);
-app.use('/', historialRouter);
+app.use('/', servicioRouter);
 app.use('/', ventasRouter); 
+app.use('/cajas', cajaRouter);
+app.use('/', reembolsoRouter); 
 
 const PORT = process.env.PORT || 3000;  
 app.listen(PORT, () => console.log('Servidor andando en ' + PORT));
