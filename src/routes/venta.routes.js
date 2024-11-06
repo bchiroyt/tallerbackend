@@ -4,8 +4,8 @@ import { verifyToken } from "../middlewares/jwt.middleware.js";
 
 const router = Router();
 
-router.post('/ventas', verifyToken, VentaController.crearVenta);
-router.get('/ventas', verifyToken, VentaController.obtenerVentas);
-router.get('/ventas/:id', verifyToken, VentaController.obtenerVenta);
+router.post('/', verifyToken, VentaController.crearVenta);
+router.get('/buscar', verifyToken, VentaController.buscarProductos);
+router.get('/caja/:id_caja', verifyToken, VentaController.obtenerVentasPorCaja);
 
 export default router;

@@ -1,37 +1,54 @@
-import jsPDF from 'jspdf';
+import { jsPDF } from 'jspdf';
+import 'jspdf-autotable';
 
-export const generarPDF = (venta) => {
-  const doc = new jsPDF();
-  
-  // Configuración del documento
-  doc.setFontSize(18);
-  doc.text('Comprobante de Venta', 105, 20, null, null, 'center');
-  
-  doc.setFontSize(12);
-  doc.text(`Número de Comprobante: ${venta.numero_comprobante}`, 20, 40);
-  doc.text(`Fecha: ${new Date(venta.fecha_venta).toLocaleString()}`, 20, 50);
-  doc.text(`Cliente: ${venta.nombre_cliente || 'No registrado'}`, 20, 60);
-  
-  // Tabla de items
-  let yPos = 80;
-  doc.setFontSize(10);
-  doc.text('Descripción', 20, yPos);
-  doc.text('Cantidad', 100, yPos);
-  doc.text('Precio', 130, yPos);
-  doc.text('Subtotal', 160, yPos);
-  
-  yPos += 10;
-  venta.detalles.forEach(item => {
-    doc.text(item.nombre || `${item.tipo_item} ${item.id_item}`, 20, yPos);
-    doc.text(item.cantidad.toString(), 100, yPos);
-    doc.text(`Q${item.precio_unitario.toFixed(2)}`, 130, yPos);
-    doc.text(`Q${item.subtotal.toFixed(2)}`, 160, yPos);
-    yPos += 10;
-  });
-  
-  // Total
-  doc.setFontSize(12);
-  doc.text(`Total: Q${venta.total_venta.toFixed(2)}`, 160, yPos + 10);
-  
-  return doc.output('arraybuffer');
+export const generarPDF = async (venta, detalles, cliente) => {
+  try {
+    const doc = new jsPDF();
+    
+    // Encabezado
+    doc.setFontSize(20);
+    doc.text('Bici-Repuestos', 105, 20, { align: 'center' });
+    doc.text('DESCUENTAZO-BIKE', 105, 30, { align: 'center' });
+    
+    doc.setFontSize(12);
+    doc.text(`No. Comprobante: ${venta.numero_comprobante || 'N/A'}`, 20, 40);
+    doc.text(`Fecha: ${new Date(venta.fecha_venta).toLocaleString()}`, 20, 50);
+    
+    // Información del cliente
+    doc.text(`Cliente: ${cliente?.nombre || 'Consumidor Final'}`, 20, 60);
+    doc.text(`NIT: ${cliente?.nit || 'C/F'}`, 20, 70);
+    
+    // Tabla de productos
+    const headers = [['Descripción', 'Cantidad', 'Precio Unit.', 'Subtotal']];
+    const data = detalles.map(item => [
+      item.nombre || `${item.tipo_item} ${item.id_item}`,
+      item.cantidad.toString(),
+      `Q${Number(item.precio_unitario).toFixed(2)}`,
+      `Q${Number(item.subtotal).toFixed(2)}`
+    ]);
+    
+    doc.autoTable({
+      startY: 80,
+      head: headers,
+      body: data,
+      theme: 'grid',
+      styles: { fontSize: 10 },
+      headStyles: { fillColor: [66, 66, 66] }
+    });
+    
+    // Totales
+    const finalY = doc.lastAutoTable.finalY + 10;
+    doc.text(`Total: Q${Number(venta.total_venta).toFixed(2)}`, 150, finalY);
+    doc.text(`Efectivo: Q${Number(venta.monto_recibido).toFixed(2)}`, 150, finalY + 10);
+    doc.text(`Cambio: Q${Number(venta.cambio).toFixed(2)}`, 150, finalY + 20);
+    
+    // Pie de página
+    doc.setFontSize(10);
+    doc.text('Gracias por su compra', 105, finalY + 40, { align: 'center' });
+    
+    return doc.output('arraybuffer');
+  } catch (error) {
+    console.error('Error generando PDF:', error);
+    throw error;
+  }
 };

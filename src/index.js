@@ -46,9 +46,9 @@ app.use('/', comprasRouter);
 app.use('/', clientesRouter);
 app.use('/', mantenimientoRouter);
 app.use('/', servicioRouter);
-app.use('/', ventasRouter); 
+app.use('/ventas', ventasRouter); 
 app.use('/cajas', cajaRouter);
-app.use('/', reembolsoRouter); 
+app.use('/reembolso', reembolsoRouter); 
 
 const PORT = process.env.PORT || 3000;  
 app.listen(PORT, () => console.log('Servidor andando en ' + PORT));

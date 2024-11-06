@@ -4,8 +4,7 @@ import { verifyToken } from "../middlewares/jwt.middleware.js";
 
 const router = Router();
 
-router.post('/reembolsos', verifyToken, ReembolsoController.crearReembolso);
-router.get('/reembolsos', verifyToken, ReembolsoController.obtenerReembolsos);
-router.get('/reembolsos/:id', verifyToken, ReembolsoController.obtenerReembolso);
+router.post('/', verifyToken, ReembolsoController.crearReembolso);
+router.get('/caja/:id_caja', verifyToken, ReembolsoController.obtenerReembolsosPorCaja);
 
 export default router;

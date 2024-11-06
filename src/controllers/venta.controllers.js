@@ -1,5 +1,6 @@
-import { VentaModel } from "../models/venta.model.js";
-import { generarPDF } from "../utils/pdf.generator.js";
+import { VentaModel } from '../models/venta.model.js';
+import { generarPDF } from '../utils/pdf.generator.js';
+import fs from 'fs';  // Cambiado a importación de fs normal
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -8,55 +9,111 @@ const __dirname = path.dirname(__filename);
 
 const crearVenta = async (req, res) => {
   try {
-    const ventaData = req.body;
-    
-    // Validar que haya una caja abierta
-    const cajaActual = await CajaModel.getCajaActual();
-    if (!cajaActual) {
-      return res.status(400).json({ 
-        ok: false, 
-        msg: 'No hay una caja abierta para realizar ventas' 
+    const ventaData = {
+      ...req.body,
+      id_usuario: req.usuario.id
+      // Removemos la generación del numero_comprobante
+    };
+
+    // Validaciones iniciales
+    if (!ventaData.id_caja) {
+      return res.status(400).json({
+        ok: false,
+        msg: 'No hay una caja abierta'
       });
     }
-    
+
     // Crear la venta
-    const venta = await VentaModel.create(ventaData);
-    
-    // Generar PDF
-    const pdfBuffer = await generarPDF(venta);
-    const pdfFileName = `venta-${venta.numero_comprobante}.pdf`;
-    const pdfPath = path.join(__dirname, '..', '..', 'uploads', 'pdfs', pdfFileName);
-    
-    // Guardar PDF
-    await fs.promises.writeFile(pdfPath, pdfBuffer);
-    
-    // Actualizar URL del PDF en la venta
-    const pdfUrl = `/uploads/pdfs/${pdfFileName}`;
-    await VentaModel.updatePdfUrl(venta.id_venta, pdfUrl);
-    
-    return res.status(201).json({
-      ok: true,
-      msg: 'Venta creada exitosamente',
-      venta: {
-        ...venta,
-        pdf_url: pdfUrl
+    const venta = await VentaModel.crearVenta(ventaData);
+
+    // Obtener detalles completos de la venta
+    const detallesVenta = await VentaModel.obtenerDetallesVenta(venta.id_venta);
+    const clienteInfo = ventaData.id_cliente ? 
+      await VentaModel.obtenerCliente(ventaData.id_cliente) : null;
+
+    try {
+      // Generar PDF
+      const pdfBuffer = await generarPDF(venta, detallesVenta, clienteInfo);
+      
+      // Crear directorio si no existe
+      const pdfDir = path.join(__dirname, '..', '..', 'uploads', 'pdfs');
+      if (!fs.existsSync(pdfDir)) {
+        fs.mkdirSync(pdfDir, { recursive: true });
       }
-    });
-    
+
+      const pdfFileName = `venta-${venta.numero_comprobante}.pdf`;
+      const pdfPath = path.join(pdfDir, pdfFileName);
+      
+      // Guardar PDF
+      fs.writeFileSync(pdfPath, Buffer.from(pdfBuffer));
+      
+      // Actualizar URL del PDF en la base de datos
+      const pdfUrl = `/uploads/pdfs/${pdfFileName}`;
+      await VentaModel.actualizarPdfUrl(venta.id_venta, pdfUrl);
+
+      return res.status(201).json({
+        ok: true,
+        msg: 'Venta creada exitosamente',
+        venta: {
+          ...venta,
+          pdf_url: pdfUrl
+        }
+      });
+
+    } catch (pdfError) {
+      console.error('Error al generar PDF:', pdfError);
+      return res.status(201).json({
+        ok: true,
+        msg: 'Venta creada exitosamente (sin PDF)',
+        venta
+      });
+    }
+
   } catch (error) {
-    console.error(error);
+    console.error('Error al crear la venta:', error);
     return res.status(500).json({
       ok: false,
-      msg: 'Error al crear la venta',
-      error: error.message
+      msg: 'Error al crear la venta'
     });
   }
 };
 
-const obtenerVentas = async (req, res) => {
+const buscarProductos = async (req, res) => {
   try {
-    const ventas = await VentaModel.getAll();
-    return res.json({ ok: true, ventas });
+    const { termino } = req.query;
+    
+    if (!termino) {
+      return res.status(400).json({
+        ok: false,
+        msg: 'El término de búsqueda es requerido'
+      });
+    }
+
+    const productos = await VentaModel.buscarProductos(termino);
+    
+    return res.json({
+      ok: true,
+      productos
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      ok: false,
+      msg: 'Error al buscar productos'
+    });
+  }
+};
+
+const obtenerVentasPorCaja = async (req, res) => {
+  try {
+    const { id_caja } = req.params;
+    
+    const ventas = await VentaModel.obtenerVentasPorCaja(id_caja);
+    
+    return res.json({
+      ok: true,
+      ventas
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).json({
@@ -66,30 +123,8 @@ const obtenerVentas = async (req, res) => {
   }
 };
 
-const obtenerVenta = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const venta = await VentaModel.getById(id);
-    
-    if (!venta) {
-      return res.status(404).json({
-        ok: false,
-        msg: 'Venta no encontrada'
-      });
-    }
-    
-    return res.json({ ok: true, venta });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      ok: false,
-      msg: 'Error al obtener la venta'
-    });
-  }
-};
-
 export const VentaController = {
   crearVenta,
-  obtenerVentas,
-  obtenerVenta
+  buscarProductos,
+  obtenerVentasPorCaja
 };
