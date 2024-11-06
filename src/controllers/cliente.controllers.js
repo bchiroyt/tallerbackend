@@ -85,11 +85,38 @@ const eliminarCliente = async (req, res) => {
   }
 };
 
+const buscarClientePorNit = async (req, res) => {
+  try {
+    const { nit } = req.params;
+    
+    const cliente = await ClienteModel.findByNit(nit);
+    
+    if (!cliente) {
+      return res.status(404).json({ 
+        ok: false, 
+        msg: "No se encontró ningún cliente con ese NIT" 
+      });
+    }
+    
+    return res.json({ 
+      ok: true, 
+      cliente 
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ 
+      ok: false, 
+      msg: 'Error al buscar el cliente por NIT' 
+    });
+  }
+};
+
 export const ClienteController = {
   crearCliente,
   obtenerClientes,
   obtenerCliente,
   actualizarCliente,
   estadosCliente,
-  eliminarCliente
+  eliminarCliente,
+  buscarClientePorNit
 };

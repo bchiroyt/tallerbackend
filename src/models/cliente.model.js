@@ -67,11 +67,25 @@ const deleteById = async (id) => {
   return result.rowCount > 0;
 };
 
+// Buscar cliente por NIT
+const findByNit = async (nit) => {
+  const query = {
+    text: `
+      SELECT * FROM taller.clientes 
+      WHERE nit = $1
+    `,
+    values: [nit]
+  };
+  const { rows } = await db.query(query);
+  return rows[0];
+};
+
 export const ClienteModel = {
   create,
   findById,
   updateById,
   estadoCliente,
   deleteById,
-  getAll
+  getAll,
+  findByNit
 };
