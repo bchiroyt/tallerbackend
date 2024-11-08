@@ -1,52 +1,51 @@
+// reembolso.controller.js
 import { ReembolsoModel } from '../models/reembolso.model.js';
 
 const crearReembolso = async (req, res) => {
   try {
     const reembolsoData = {
       ...req.body,
-      id_usuario: req.usuario.id
+      // Cambiamos req.usuario.id por req.usuario.id_usuario
+      id_usuario: req.usuario.id_usuario
     };
 
-    // Validar que no sea un servicio
-    const tieneServicios = reembolsoData.items.some(item => 
-      item.tipo_item === 'servicio'
-    );
-
-    if (tieneServicios) {
+    // Validaciones básicas
+    if (!reembolsoData.id_venta || !reembolsoData.items || !reembolsoData.items.length) {
       return res.status(400).json({
         ok: false,
-        msg: 'No se pueden reembolsar servicios'
+        msg: 'Datos incompletos para el reembolso'
       });
     }
 
     const reembolso = await ReembolsoModel.crearReembolso(reembolsoData);
 
-    return res.status(201).json({
+    res.status(201).json({
       ok: true,
-      msg: 'Reembolso realizado exitosamente',
+      msg: 'Reembolso procesado exitosamente',
       reembolso
     });
   } catch (error) {
-    console.error('Error al crear reembolso:', error);
-    return res.status(500).json({
+    console.error('Error al crear el reembolso:', error);
+    res.status(500).json({
       ok: false,
-      msg: 'Error al procesar el reembolso'
+      msg: 'Error al procesar el reembolso',
+      error: error.message
     });
   }
 };
 
-const obtenerReembolsosPorCaja = async (req, res) => {
+const obtenerReembolsosPorVenta = async (req, res) => {
   try {
-    const { id_caja } = req.params;
-    const reembolsos = await ReembolsoModel.obtenerReembolsosPorCaja(id_caja);
+    const { id_venta } = req.params;
+    const reembolsos = await ReembolsoModel.obtenerReembolsosPorVenta(id_venta);
 
-    return res.json({
+    res.json({
       ok: true,
       reembolsos
     });
   } catch (error) {
-    console.error('Error al obtener reembolsos:', error);
-    return res.status(500).json({
+    console.error('Error al obtener los reembolsos:', error);
+    res.status(500).json({
       ok: false,
       msg: 'Error al obtener los reembolsos'
     });
@@ -55,5 +54,5 @@ const obtenerReembolsosPorCaja = async (req, res) => {
 
 export const ReembolsoController = {
   crearReembolso,
-  obtenerReembolsosPorCaja
+  obtenerReembolsosPorVenta
 };

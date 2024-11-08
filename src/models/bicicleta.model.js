@@ -1,14 +1,37 @@
 import { db } from '../database/database.js';
 
 // Crear una nueva bicicleta
-const create = async ({ id_categoria, codigo, nombre, marca, modelo, precio_costo, precio_venta, stock, descripcion, imagen, tipo_bicicleta }) => {
+const create = async ({ id_categoria, codigo, nombre, marca, modelo, precio_costo, precio_venta, stock, imagen, tipo_bicicleta }) => {
   const query = {
     text: `
-    INSERT INTO taller.bicicletas (id_categoria, codigo, nombre, marca, modelo, precio_costo, precio_venta, stock, descripcion, imagen, tipo_bicicleta, estado) 
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, TRUE)
+    INSERT INTO taller.bicicletas (
+      id_categoria, 
+      codigo, 
+      nombre, 
+      marca, 
+      modelo, 
+      precio_costo, 
+      precio_venta, 
+      stock, 
+      imagen, 
+      tipo_bicicleta, 
+      estado
+    ) 
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, TRUE)
     RETURNING *
     `,
-    values: [id_categoria, codigo, nombre, marca, modelo, precio_costo, precio_venta, stock, descripcion, imagen, tipo_bicicleta]
+    values: [
+      id_categoria, 
+      codigo, 
+      nombre, 
+      marca, 
+      modelo, 
+      precio_costo, 
+      precio_venta, 
+      stock, 
+      imagen, 
+      tipo_bicicleta
+    ]
   };
   const { rows } = await db.query(query);
   return rows[0];
@@ -46,15 +69,37 @@ const findById = async (id) => {
 };
 
 // Actualizar una bicicleta por ID
-const updateById = async (id, { id_categoria, codigo, nombre, marca, modelo, precio_costo, precio_venta, stock, descripcion, imagen, tipo_bicicleta }) => {
+const updateById = async (id, { id_categoria, codigo, nombre, marca, modelo, precio_costo, precio_venta, stock, imagen, tipo_bicicleta }) => {
   const query = {
     text: `
     UPDATE taller.bicicletas 
-    SET id_categoria = $1, codigo = $2, nombre = $3, marca = $4, modelo = $5, precio_costo = $6, precio_venta = $7, stock = $8, descripcion = $9, imagen = $10, tipo_bicicleta = $11 
-    WHERE id_bicicleta = $12 
+    SET 
+      id_categoria = $1, 
+      codigo = $2, 
+      nombre = $3, 
+      marca = $4, 
+      modelo = $5, 
+      precio_costo = $6, 
+      precio_venta = $7, 
+      stock = $8, 
+      imagen = $9, 
+      tipo_bicicleta = $10 
+    WHERE id_bicicleta = $11 
     RETURNING *
     `,
-    values: [id_categoria, codigo, nombre, marca, modelo, precio_costo, precio_venta, stock, descripcion, imagen, tipo_bicicleta, id]
+    values: [
+      id_categoria, 
+      codigo, 
+      nombre, 
+      marca, 
+      modelo, 
+      precio_costo, 
+      precio_venta, 
+      stock, 
+      imagen, 
+      tipo_bicicleta, 
+      id
+    ]
   };
   const { rows } = await db.query(query);
   return rows[0];

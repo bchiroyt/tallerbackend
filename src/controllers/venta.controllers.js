@@ -11,8 +11,8 @@ const crearVenta = async (req, res) => {
   try {
     const ventaData = {
       ...req.body,
-      id_usuario: req.usuario.id
-      // Removemos la generación del numero_comprobante
+      // Cambiamos req.usuario.id por req.usuario.id_usuario
+      id_usuario: req.usuario.id_usuario
     };
 
     // Validaciones iniciales
@@ -123,8 +123,52 @@ const obtenerVentasPorCaja = async (req, res) => {
   }
 };
 
+const obtenerTodasLasVentas = async (req, res) => {
+  try {
+    const ventas = await VentaModel.obtenerTodasLasVentas();
+    
+    return res.json({
+      ok: true,
+      ventas
+    });
+  } catch (error) {
+    console.error('Error al obtener todas las ventas:', error);
+    return res.status(500).json({
+      ok: false,
+      msg: 'Error al obtener las ventas'
+    });
+  }
+};
+
+const obtenerVentaPorId = async (req, res) => {
+  try {
+    const { id_venta } = req.params;
+    const venta = await VentaModel.obtenerVentaPorId(id_venta);
+    
+    if (!venta) {
+      return res.status(404).json({
+        ok: false,
+        msg: 'Venta no encontrada'
+      });
+    }
+
+    return res.json({
+      ok: true,
+      venta
+    });
+  } catch (error) {
+    console.error('Error al obtener la venta:', error);
+    return res.status(500).json({
+      ok: false,
+      msg: 'Error al obtener la venta'
+    });
+  }
+};
+
 export const VentaController = {
   crearVenta,
   buscarProductos,
-  obtenerVentasPorCaja
+  obtenerVentasPorCaja,
+  obtenerTodasLasVentas,
+  obtenerVentaPorId
 };

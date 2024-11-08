@@ -3,7 +3,8 @@ import { CajaModel } from '../models/caja.model.js';
 const abrirCaja = async (req, res) => {
   try {
     const { monto_inicial } = req.body;
-    const id_usuario = req.usuario.id;
+    // Modificar esta línea para usar id_usuario en lugar de id
+    const id_usuario = req.usuario.id_usuario;
     
     // Verificar que no haya una caja abierta
     const cajaActual = await CajaModel.getCajaActual();

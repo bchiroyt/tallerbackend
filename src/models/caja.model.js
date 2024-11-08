@@ -35,7 +35,7 @@ const getCajaActual = async () => {
     text: `
       SELECT 
         c.*,
-        u.nombre as nombre_usuario,
+        CONCAT(u.nombre, ' ', u.apellido) as nombre_usuario,
         u.email as email_usuario,
         COALESCE(SUM(v.total_venta), 0) as total_ventas_reales,
         COALESCE(SUM(r.monto_reembolso), 0) as total_reembolsos_reales,
@@ -46,8 +46,8 @@ const getCajaActual = async () => {
         ) as saldo_actual
       FROM taller.cajas c
       LEFT JOIN taller.usuarios u ON c.id_usuario = u.id_usuario
-      LEFT JOIN taller.ventas v ON v.id_caja = c.id_caja
-      LEFT JOIN taller.reembolsos r ON r.id_venta = v.id_venta
+      LEFT JOIN taller.ventas v ON v.id_caja = c.id_caja AND v.estado_venta = TRUE
+      LEFT JOIN taller.reembolsos r ON r.id_venta = v.id_venta AND r.estado_reembolso = TRUE
       WHERE c.estado_caja = TRUE
       GROUP BY 
         c.id_caja,
@@ -59,6 +59,7 @@ const getCajaActual = async () => {
         c.total_ventas,
         c.total_reembolsos,
         u.nombre,
+        u.apellido,
         u.email
       ORDER BY c.fecha_apertura DESC
       LIMIT 1

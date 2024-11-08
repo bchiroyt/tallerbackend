@@ -47,7 +47,8 @@ const addDetail = async (detalleData) => {
     tipo_producto, 
     id_producto, 
     cantidad, 
-    precio_unitario, 
+    precio_unitario,
+    precio_venta,
     subtotal 
   } = detalleData;
   
@@ -68,8 +69,8 @@ const addDetail = async (detalleData) => {
     text: `
       INSERT INTO taller.detalle_compra 
       (id_compra, tipo_producto, id_producto, id_accesorio, id_bicicleta,
-       cantidad, precio_unitario, subtotal)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+       cantidad, precio_unitario, precio_venta, subtotal)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
       RETURNING *
     `,
     values: [
@@ -80,12 +81,58 @@ const addDetail = async (detalleData) => {
       id_bicicleta,
       cantidad,
       precio_unitario,
+      precio_venta,
       subtotal
     ]
   };
   
   const { rows } = await db.query(query);
-  return rows[0];
+  
+  // Actualizar stock y precios según tipo de producto
+  let updateQuery;
+  if (tipo_producto === 'producto') {
+    updateQuery = {
+      text: `
+        UPDATE taller.productos 
+        SET stock = stock + $1,
+            precio_costo = $2,
+            precio_venta = $3
+        WHERE id_producto = $4
+        RETURNING nombre
+      `,
+      values: [cantidad, precio_unitario, precio_venta, id_producto]
+    };
+  } else if (tipo_producto === 'accesorio') {
+    updateQuery = {
+      text: `
+        UPDATE taller.accesorios 
+        SET stock = stock + $1,
+            precio_costo = $2,
+            precio_venta = $3
+        WHERE id_accesorio = $4
+        RETURNING nombre
+      `,
+      values: [cantidad, precio_unitario, precio_venta, id_accesorio]
+    };
+  } else if (tipo_producto === 'bicicleta') {
+    updateQuery = {
+      text: `
+        UPDATE taller.bicicletas 
+        SET stock = stock + $1,
+            precio_costo = $2,
+            precio_venta = $3
+        WHERE id_bicicleta = $4
+        RETURNING nombre
+      `,
+      values: [cantidad, precio_unitario, precio_venta, id_bicicleta]
+    };
+  }
+
+  const updateResult = await db.query(updateQuery);
+  return {
+    detalle: rows[0],
+    nombreProducto: updateResult.rows[0]?.nombre
+  };
 };
 
 const updateStock = async (tipo_producto, id_producto, cantidad) => {
@@ -138,10 +185,9 @@ const getAllCompras = async () => {
       SELECT c.*, p.nombre_compañia as proveedor_nombre
       FROM taller.compras c
       LEFT JOIN taller.proveedores p ON c.id_proveedor = p.id_proveedor
-      ORDER BY c.fecha_facturacion DESC
+      ORDER BY c.fecha_compra DESC
     `
   };
-  
   const { rows } = await db.query(query);
   return rows;
 };
@@ -164,16 +210,14 @@ const getCompraById = async (id) => {
 const getDetallesCompra = async (id_compra) => {
   const query = {
     text: `
-      SELECT dc.*, 
-             CASE 
-               WHEN dc.tipo_producto = 'accesorio' THEN a.nombre
-               WHEN dc.tipo_producto = 'bicicleta' THEN b.nombre
-               WHEN dc.tipo_producto = 'producto' THEN p.nombre
-             END as nombre_producto
+      SELECT 
+        dc.*,
+        COALESCE(p.nombre, a.nombre, b.nombre) as nombre_producto,
+        COALESCE(p.codigo, a.codigo_barra, b.codigo) as codigo_producto
       FROM taller.detalle_compra dc
-      LEFT JOIN taller.accesorios a ON dc.tipo_producto = 'accesorio' AND dc.id_producto = a.id_accesorio
-      LEFT JOIN taller.bicicletas b ON dc.tipo_producto = 'bicicleta' AND dc.id_producto = b.id_bicicleta
-      LEFT JOIN taller.productos p ON dc.tipo_producto = 'producto' AND dc.id_producto = p.id_producto
+      LEFT JOIN taller.productos p ON dc.id_producto = p.id_producto
+      LEFT JOIN taller.accesorios a ON dc.id_accesorio = a.id_accesorio
+      LEFT JOIN taller.bicicletas b ON dc.id_bicicleta = b.id_bicicleta
       WHERE dc.id_compra = $1
     `,
     values: [id_compra]
@@ -183,6 +227,21 @@ const getDetallesCompra = async (id_compra) => {
   return rows;
 };
 
+const updatePdfPath = async (id_compra, pdfPath) => {
+  const query = {
+    text: `
+      UPDATE taller.compras 
+      SET pdf = $1 
+      WHERE id_compra = $2 
+      RETURNING *
+    `,
+    values: [pdfPath, id_compra]
+  };
+  
+  const { rows } = await db.query(query);
+  return rows[0];
+};
+
 export const CompraModel = {
   create,
   addDetail,
@@ -190,5 +249,6 @@ export const CompraModel = {
   getLastComprobanteNumber,
   getAllCompras,
   getCompraById,
-  getDetallesCompra
+  getDetallesCompra,
+  updatePdfPath
 };

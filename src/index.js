@@ -20,6 +20,8 @@ import servicioRouter from './routes/servicio.routes.js';
 import ventasRouter from './routes/venta.routes.js'; 
 import cajaRouter from './routes/caja.routes.js';
 import reembolsoRouter from './routes/reembolso.routes.js'
+import reportesRouter from './routes/reportes.routes.js'
+import consultasRouter from './routes/consultas.routes.js'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -48,7 +50,10 @@ app.use('/', mantenimientoRouter);
 app.use('/', servicioRouter);
 app.use('/ventas', ventasRouter); 
 app.use('/cajas', cajaRouter);
-app.use('/reembolso', reembolsoRouter); 
+app.use('/reembolsos', reembolsoRouter); 
+app.use('/reportes', reportesRouter);
+app.use('/consultas', consultasRouter);
+
 
 const PORT = process.env.PORT || 3000;  
 app.listen(PORT, () => console.log('Servidor andando en ' + PORT));

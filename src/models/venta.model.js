@@ -101,7 +101,7 @@ const buscarProductos = async (termino) => {
           nombre,
           precio_venta,
           stock,
-          descripcion
+          COALESCE(marca || ' ' || modelo, '') as descripcion
         FROM taller.bicicletas
         WHERE (LOWER(nombre) LIKE $1 OR LOWER(codigo) = LOWER($2))
         AND estado = true
@@ -236,6 +236,77 @@ const obtenerCliente = async (id_cliente) => {
   return cliente;
 };
 
+const obtenerTodasLasVentas = async () => {
+  const query = {
+    text: `
+      SELECT 
+        v.*,
+        c.nombre as nombre_cliente,
+        c.nit,
+        u.nombre as nombre_usuario
+      FROM taller.ventas v
+      LEFT JOIN taller.clientes c ON v.id_cliente = c.id_cliente
+      LEFT JOIN taller.usuarios u ON v.id_usuario = u.id_usuario
+      ORDER BY v.fecha_venta DESC
+    `
+  };
+  const { rows } = await db.query(query);
+  return rows;
+};
+
+const obtenerVentaPorId = async (id_venta) => {
+  const client = await db.connect();
+  try {
+    // Obtener información de la venta
+    const ventaQuery = {
+      text: `
+        SELECT 
+          v.*,
+          c.nombre as nombre_cliente,
+          c.nit,
+          u.nombre as nombre_usuario
+        FROM taller.ventas v
+        LEFT JOIN taller.clientes c ON v.id_cliente = c.id_cliente
+        LEFT JOIN taller.usuarios u ON v.id_usuario = u.id_usuario
+        WHERE v.id_venta = $1
+      `,
+      values: [id_venta]
+    };
+    
+    const { rows: [venta] } = await client.query(ventaQuery);
+    if (!venta) return null;
+
+    // Obtener detalles de la venta
+    const detallesQuery = {
+      text: `
+        SELECT 
+          dv.*,
+          CASE 
+            WHEN dv.tipo_item = 'bicicleta' THEN b.nombre
+            WHEN dv.tipo_item = 'accesorio' THEN a.nombre
+            WHEN dv.tipo_item = 'producto' THEN p.nombre
+            WHEN dv.tipo_item = 'servicio' THEN s.nombre_bicicleta
+          END as nombre_item
+        FROM taller.detalle_venta dv
+        LEFT JOIN taller.bicicletas b ON dv.tipo_item = 'bicicleta' AND dv.id_item = b.id_bicicleta
+        LEFT JOIN taller.accesorios a ON dv.tipo_item = 'accesorio' AND dv.id_item = a.id_accesorio
+        LEFT JOIN taller.productos p ON dv.tipo_item = 'producto' AND dv.id_item = p.id_producto
+        LEFT JOIN taller.servicio s ON dv.tipo_item = 'servicio' AND dv.id_item = s.id_historial
+        WHERE dv.id_venta = $1
+      `,
+      values: [id_venta]
+    };
+
+    const { rows: items } = await client.query(detallesQuery);
+    
+    return {
+      ...venta,
+      items // Cambiado de detalles a items para mantener consistencia
+    };
+  } finally {
+    client.release();
+  }
+};
 
 
 export const VentaModel = {
@@ -244,6 +315,8 @@ export const VentaModel = {
   obtenerVentasPorCaja,
   actualizarPdfUrl,
   obtenerDetallesVenta,
-  obtenerCliente
+  obtenerCliente,
+  obtenerTodasLasVentas,
+  obtenerVentaPorId
 
 };

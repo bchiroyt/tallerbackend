@@ -16,18 +16,23 @@ const create = async({ nit, nombre, email, direccion, telefono }) => {
 
 // Actualizar un cliente por ID
 const updateById = async (id, { nit, nombre, email, direccion, telefono, estado_cli }) => {
-    const query = {
-      text: `
-        UPDATE taller.clientes 
-        SET nit = $1, nombre = $2, email = $3, direccion = $4, telefono = $5, estado_cli = $6
-        WHERE id_cliente = $7 
-        RETURNING id_cliente, nit, nombre, email, direccion, telefono, estado_cli
-      `,
-      values: [nit, nombre, email, direccion, telefono, estado_cli, id]
-    };
-    const { rows } = await db.query(query);
-    return rows[0];
+  const query = {
+    text: `
+      UPDATE taller.clientes 
+      SET nit = $1, 
+          nombre = $2, 
+          email = $3, 
+          direccion = $4, 
+          telefono = $5, 
+          estado_cli = COALESCE($6, estado_cli) 
+      WHERE id_cliente = $7 
+      RETURNING id_cliente, nit, nombre, email, direccion, telefono, estado_cli
+    `,
+    values: [nit, nombre, email, direccion, telefono, estado_cli, id]
   };
+  const { rows } = await db.query(query);
+  return rows[0];
+};
   
 
 // Cambiar el estado de un cliente por ID (eliminación lógica)
