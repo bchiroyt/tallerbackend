@@ -1,21 +1,20 @@
-import 'dotenv/config' 
-import pg from 'pg'  
+import 'dotenv/config'
+import pg from 'pg'
 
-const { Pool } = pg 
+const { Pool } = pg
 
-const connectionString = process.env.DATABASE_URL  
+const connectionString = process.env.DATABASE_URL
 
 export const db = new Pool({
-  allowExitOnIdle: true,  
   connectionString,
-  charset: 'utf8'
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
 });
 
 try {
-  await db.query('SELECT NOW()') 
-  console.log('Conectado a la base de datos')  
+  await db.query('SELECT NOW()')
+  console.log('Conectado a la base de datos')
 } catch (error) {
-  console.log(error)  
+  console.error('Error al conectar a la base de datos:', error)
 }
 
 
