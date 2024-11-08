@@ -23,6 +23,10 @@ import reembolsoRouter from './routes/reembolso.routes.js'
 import reportesRouter from './routes/reportes.routes.js'
 import consultasRouter from './routes/consultas.routes.js'
 
+
+console.log('JWT_SECRET está configurado:', !!process.env.JWT_SECRET);
+
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
