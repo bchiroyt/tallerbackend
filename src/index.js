@@ -43,25 +43,25 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));  
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 
-// Rutas con prefijos más específicos
-app.use('/api/usuarios', userRouter);  
-app.use('/api/roles', rolRouter);  
-app.use('/api/modulos', moduloRouter);  
-app.use('/api/roles-modulos', rolesModulosRouter);  
-app.use('/api/categorias', categoriaRouter);  
-app.use('/api/accesorios', accesorioRouter);  
-app.use('/api/productos', productoRouter);
-app.use('/api/bicicletas', bicicletaRouter);
-app.use('/api/proveedores', proveedorRouter);
-app.use('/api/compras', comprasRouter);
-app.use('/api/clientes', clientesRouter);
-app.use('/api/mantenimientos', mantenimientoRouter);
-app.use('/api/servicios', servicioRouter);
-app.use('/api/ventas', ventasRouter); 
-app.use('/api/cajas', cajaRouter);
-app.use('/api/reembolsos', reembolsoRouter); 
-app.use('/api/reportes', reportesRouter);
-app.use('/api/consultas', consultasRouter);
+// Registrar las rutas
+app.use('/', userRouter);  
+app.use('/', rolRouter);  
+app.use('/', moduloRouter);  
+app.use('/', rolesModulosRouter);  
+app.use('/', categoriaRouter);  
+app.use('/', accesorioRouter);  
+app.use('/', productoRouter);
+app.use('/', bicicletaRouter);
+app.use('/', proveedorRouter);
+app.use('/', comprasRouter);
+app.use('/', clientesRouter);
+app.use('/', mantenimientoRouter);
+app.use('/', servicioRouter);
+app.use('/ventas', ventasRouter); 
+app.use('/cajas', cajaRouter);
+app.use('/reembolsos', reembolsoRouter); 
+app.use('/reportes', reportesRouter);
+app.use('/consultas', consultasRouter);
 
 // Manejador de errores
 app.use((err, req, res, next) => {
