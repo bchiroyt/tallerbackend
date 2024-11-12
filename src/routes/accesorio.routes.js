@@ -42,10 +42,9 @@ const upload = multer({
 
 router.post('/accesorios', verifyToken, upload.single('imagen'), AccesorioController.crearAccesorio);  
 router.get('/accesorios', verifyToken, AccesorioController.obtenerAccesorios);  
-router.get('/accesorios/buscar', verifyToken, AccesorioController.buscarAccesorios); //buscar por nombre o por codigo
+router.get('/accesorios/buscar', verifyToken, AccesorioController.buscarAccesorios);
 router.get('/accesorios/:id', verifyToken, AccesorioController.obtenerAccesorio);
-router.put('/accesorios/:id', verifyToken, upload.single('imagen'), AccesorioController.actualizarAccesorio);  
-router.delete('/accesorios/:id', verifyToken, AccesorioController.eliminarAccesorio);  
+router.put('/accesorios/:id', verifyToken, upload.single('imagen'), AccesorioController.actualizarAccesorio); 
 router.patch('/accesorios/:id/estado', verifyToken, AccesorioController.cambiarEstadoAccesorio);
 
  

@@ -42,10 +42,9 @@ const upload = multer({
 
 router.post('/bicicletas', verifyToken, upload.single('imagen'), BicicletaController.crearBicicleta);  
 router.get('/bicicletas', verifyToken, BicicletaController.obtenerBicicletas);  
-router.get('/bicicletas/buscar', verifyToken, BicicletaController.buscarBicicletas);  //ruta de busqueda
+router.get('/bicicletas/buscar', verifyToken, BicicletaController.buscarBicicletas);
 router.get('/bicicletas/:id', verifyToken, BicicletaController.obtenerBicicleta);
-router.put('/bicicletas/:id', verifyToken, upload.single('imagen'), BicicletaController.actualizarBicicleta);  
-router.delete('/bicicletas/:id', verifyToken, BicicletaController.eliminarBicicleta);  
+router.put('/bicicletas/:id', verifyToken, upload.single('imagen'), BicicletaController.actualizarBicicleta);
 router.patch('/bicicletas/:id/estado', verifyToken, BicicletaController.cambiarEstadoBicicleta);
 
 

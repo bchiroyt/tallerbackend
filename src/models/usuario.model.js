@@ -24,7 +24,7 @@ const findOneByEmail = async (email) => {
   return rows[0]
 };
 
-// Actualizar el estado (activar/desactivar usuario)
+// Actualizar el estado 
 const updateEstado = async (id, estado_usu) => {
   const query = {
     text: `
@@ -80,14 +80,36 @@ const updateById = async (id, { nombre, apellido, email, password, telefono, dir
   return rows[0];
 };
 
-// Eliminar un usuario por ID (eliminación física)
+// Eliminar un usuario 
 const deleteById = async (id) => {
-  const query = {
-    text: `DELETE FROM taller.usuarios WHERE id_usuario = $1`,
-    values: [id]
-  };
-  const result = await db.query(query);
-  return result.rowCount > 0;
+  const client = await db.connect();
+  try {
+    
+    if (id === '1' || id === 1) {
+      throw new Error('No se puede eliminar el usuario administrador principal');
+    }
+
+    
+    const usuarioExiste = await client.query(
+      'SELECT id_usuario FROM taller.usuarios WHERE id_usuario = $1',
+      [id]
+    );
+
+    if (usuarioExiste.rows.length === 0) {
+      throw new Error('Usuario no encontrado');
+    }
+
+    const query = {
+      text: `DELETE FROM taller.usuarios WHERE id_usuario = $1 RETURNING *`,
+      values: [id]
+    };
+    const result = await client.query(query);
+    return result.rows[0];
+  } catch (error) {
+    throw error;
+  } finally {
+    client.release();
+  }
 };
 
 

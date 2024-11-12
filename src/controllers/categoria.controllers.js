@@ -58,15 +58,54 @@ const actualizarCategoria = async (req, res) => {
 const estadosCategoria = async (req, res) => {
   try {
     const { id } = req.params;
-    const { estado_cat } = req.body; // true o false
-    const result = await CategoriaModel.estadoCategoria(id, estado_cat);
-    if (!result) {
-      return res.status(404).json({ ok: false, msg: "Categoría no encontrada" });
+    const { estado_cat } = req.body;
+
+    if (typeof estado_cat !== 'boolean') {
+      return res.status(400).json({
+        ok: false,
+        msg: 'El estado debe ser un valor booleano'
+      });
     }
-    return res.json({ ok: true, msg: 'Estado de la categoría actualizado exitosamente' });
+
+    const result = await CategoriaModel.estadoCategoria(id, estado_cat);
+    
+    let mensaje;
+    const { itemsAfectados } = result;
+    const totalAfectados = itemsAfectados.productos + itemsAfectados.accesorios + itemsAfectados.bicicletas;
+
+    if (totalAfectados === 0) {
+      mensaje = estado_cat 
+        ? 'Categoría activada. No hubo cambios en los items relacionados.'
+        : 'Categoría desactivada. No hubo cambios en los items relacionados.';
+    } else {
+      const itemsModificados = [];
+      if (itemsAfectados.productos > 0) itemsModificados.push(`${itemsAfectados.productos} productos`);
+      if (itemsAfectados.accesorios > 0) itemsModificados.push(`${itemsAfectados.accesorios} accesorios`);
+      if (itemsAfectados.bicicletas > 0) itemsModificados.push(`${itemsAfectados.bicicletas} bicicletas`);
+
+      mensaje = `Categoría ${estado_cat ? 'activada' : 'desactivada'}. Se ${estado_cat ? 'activaron' : 'desactivaron'}: ${itemsModificados.join(', ')}`;
+    }
+
+    return res.json({
+      ok: true,
+      msg: mensaje,
+      categoria: result.categoria,
+      itemsAfectados: result.itemsAfectados
+    });
+
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({ ok: false, msg: 'Error al actualizar el estado de la categoría' });
+    console.error('Error en estadosCategoria:', error);
+    if (error.message === 'Categoría no encontrada') {
+      return res.status(404).json({
+        ok: false,
+        msg: error.message
+      });
+    }
+    return res.status(500).json({
+      ok: false,
+      msg: 'Error al actualizar el estado de la categoría',
+      error: error.message
+    });
   }
 };
 
@@ -75,13 +114,53 @@ const eliminarCategoria = async (req, res) => {
   try {
     const { id } = req.params;
     const result = await CategoriaModel.deleteById(id);
-    if (!result) {
-      return res.status(404).json({ ok: false, msg: "Categoría no encontrada" });
+    
+    const { itemsMovidos, categoriaPorDefecto } = result;
+    let mensaje = `Categoría eliminada exitosamente.`;
+    
+    const elementosMovidos = [];
+    if (itemsMovidos.productos > 0) {
+      elementosMovidos.push(`${itemsMovidos.productos} productos`);
     }
-    return res.sendStatus(204); // Eliminación exitosa
+    if (itemsMovidos.accesorios > 0) {
+      elementosMovidos.push(`${itemsMovidos.accesorios} accesorios`);
+    }
+    if (itemsMovidos.bicicletas > 0) {
+      elementosMovidos.push(`${itemsMovidos.bicicletas} bicicletas`);
+    }
+
+    if (elementosMovidos.length > 0) {
+      mensaje += ` Se movieron a la categoría "${categoriaPorDefecto.nombre_categoria}": ${elementosMovidos.join(', ')}.`;
+    }
+
+    return res.json({
+      ok: true,
+      msg: mensaje,
+      categoria: result.categoria
+    });
+
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({ ok: false, msg: 'Error del servidor al eliminar la categoría' });
+    console.error('Error en eliminarCategoria:', error);
+    
+    if (error.message === 'No se puede eliminar la categoría por defecto') {
+      return res.status(403).json({
+        ok: false,
+        msg: error.message
+      });
+    }
+    
+    if (error.message === 'Categoría no encontrada') {
+      return res.status(404).json({
+        ok: false,
+        msg: error.message
+      });
+    }
+    
+    return res.status(500).json({
+      ok: false,
+      msg: 'Error al eliminar la categoría',
+      error: error.message
+    });
   }
 };
 

@@ -30,7 +30,7 @@ const obtenerAccesorios = async (req, res) => {
   }
 };
 
-// Obtener un accesorio por ID
+// Obtener un accesorio 
 const obtenerAccesorio = async (req, res) => {
   try {
     const { id } = req.params;
@@ -45,7 +45,7 @@ const obtenerAccesorio = async (req, res) => {
   }
 };
 
-// Actualizar un accesorio por ID
+// Actualizar un accesorio
 const actualizarAccesorio = async (req, res) => {
   try {
     const { id } = req.params;
@@ -78,22 +78,7 @@ const actualizarAccesorio = async (req, res) => {
   }
 };
 
-// Eliminar un accesorio por ID
-const eliminarAccesorio = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await AccesorioModel.deleteById(id);
-    if (!result) {
-      return res.status(404).json({ ok: false, msg: "Accesorio no encontrado" });
-    }
-    return res.sendStatus(204); 
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ ok: false, msg: 'Error del servidor al eliminar el accesorio' });
-  }
-};
-
-// Cambiar el estado de un accesorio por ID
+// Cambiar el estado de un accesorio 
 const cambiarEstadoAccesorio = async (req, res) => {
   try {
     const { id } = req.params;
@@ -154,7 +139,6 @@ export const AccesorioController = {
   obtenerAccesorios,
   obtenerAccesorio,
   actualizarAccesorio,
-  eliminarAccesorio,
   cambiarEstadoAccesorio,
   buscarAccesorios
 };

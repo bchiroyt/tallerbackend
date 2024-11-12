@@ -29,7 +29,7 @@ const getAll = async (categoriaId = null, ordenId = 'asc', ordenNombre = 'asc') 
   return rows;
 };
 
-// Obtener un producto por ID
+// Obtener un producto
 const findById = async (id) => {
   const query = {
     text: `
@@ -44,7 +44,7 @@ const findById = async (id) => {
   return rows[0];
 };
 
-// Actualizar un producto por ID
+// Actualizar un producto
 const updateById = async (id, { id_categoria, codigo, nombre, precio_costo, precio_venta, stock, marca, descripcion, imagen }) => {
   const query = {
     text: `
@@ -59,17 +59,8 @@ const updateById = async (id, { id_categoria, codigo, nombre, precio_costo, prec
   return rows[0];
 };
 
-// Eliminar un producto por ID
-const deleteById = async (id) => {
-  const query = {
-    text: `DELETE FROM taller.productos WHERE id_producto = $1`,
-    values: [id]
-  };
-  await db.query(query);
-  return true;
-};
 
-// Cambiar el estado de un producto por ID
+// Cambiar el estado de un producto
 const cambiarEstadoById = async (id, estado) => {
   const query = {
     text: `UPDATE taller.productos SET estado = $1 WHERE id_producto = $2 RETURNING *`,
@@ -81,7 +72,7 @@ const cambiarEstadoById = async (id, estado) => {
 
 // buscar por codigo o nombre
 const buscar = async (termino) => {
-  // Primero intentamos buscar por código exacto
+
   const queryByCodigo = {
     text: `
       SELECT 
@@ -99,7 +90,7 @@ const buscar = async (termino) => {
   
   let result = await db.query(queryByCodigo);
   
-  // Si no encontramos por código exacto, buscamos por nombre
+ 
   if (result.rows.length === 0) {
     const queryByNombre = {
       text: `
@@ -143,7 +134,6 @@ export const ProductoModel = {
   getAll,
   findById,
   updateById,
-  deleteById,
   cambiarEstadoById,
   buscar,
   updateStockAndPrices

@@ -11,24 +11,21 @@ export const verifyToken = async (req, res, next) => {
 
     token = token.split(" ")[1];
     
-    // Decodificar el token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     
-    // Obtener el usuario completo usando el email del token
     const usuario = await UserModel.findOneByEmail(decoded.email);
     
     if (!usuario) {
       return res.status(401).json({ error: "Usuario no encontrado" });
     }
 
-    // Mantener la estructura actual para compatibilidad
+
     req.user = { 
       email: decoded.email, 
       rol: decoded.id_rol,
       permisos: decoded.permisos
     };
 
-    // Agregar id_usuario para el módulo de compras
     req.usuario = {
       id_usuario: usuario.id_usuario,
       email: usuario.email,

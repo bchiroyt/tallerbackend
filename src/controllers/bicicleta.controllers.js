@@ -77,7 +77,7 @@ const obtenerBicicleta = async (req, res) => {
   }
 };
 
-// Actualizar una bicicleta por ID
+// Actualizar una bicicleta
 const actualizarBicicleta = async (req, res) => {
   try {
     const { id } = req.params;
@@ -126,28 +126,14 @@ const actualizarBicicleta = async (req, res) => {
   }
 };
 
-// Eliminar una bicicleta por ID
-const eliminarBicicleta = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await BicicletaModel.deleteById(id);
-    if (!result) {
-      return res.status(404).json({ ok: false, msg: "Bicicleta no encontrada" });
-    }
-    return res.sendStatus(204); // Eliminación exitosa
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ ok: false, msg: 'Error del servidor al eliminar la bicicleta' });
-  }
-};
 
 // Cambiar el estado de una bicicleta por ID
 const cambiarEstadoBicicleta = async (req, res) => {
   try {
     const { id } = req.params;
-    const { estado } = req.body; // Espera un booleano (true o false)
+    const { estado } = req.body; 
 
-    // Verifica que el estado sea un booleano
+
     if (typeof estado !== 'boolean') {
       return res.status(400).json({ ok: false, msg: 'El estado debe ser un valor booleano (true o false)' });
     }
@@ -201,7 +187,6 @@ export const BicicletaController = {
   obtenerBicicletas,
   obtenerBicicleta,
   actualizarBicicleta,
-  eliminarBicicleta,
   cambiarEstadoBicicleta,
   buscarBicicletas
 };

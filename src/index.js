@@ -22,7 +22,7 @@ import ventasRouter from './routes/venta.routes.js';
 import cajaRouter from './routes/caja.routes.js';
 import reembolsoRouter from './routes/reembolso.routes.js'
 import reportesRouter from './routes/reportes.routes.js'
-import consultasRouter from './routes/consultas.routes.js'
+import consultaRouter from './routes/consultas.routes.js'
 
 
 console.log('JWT_SECRET está configurado:', !!process.env.JWT_SECRET);
@@ -32,10 +32,9 @@ const __dirname = path.dirname(__filename);
 
 const app = express();  
 
-// Configuración de CORS más específica
 app.use(cors({
-  origin: '*', // Cambia esto a los orígenes específicos en producción
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
@@ -43,7 +42,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));  
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 
-// Registrar las rutas
+
 app.use('/', userRouter);  
 app.use('/', rolRouter);  
 app.use('/', moduloRouter);  
@@ -61,9 +60,9 @@ app.use('/ventas', ventasRouter);
 app.use('/cajas', cajaRouter);
 app.use('/reembolsos', reembolsoRouter); 
 app.use('/reportes', reportesRouter);
-app.use('/consultas', consultasRouter);
+app.use('/consultas', consultaRouter);
 
-// Manejador de errores
+
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send('Algo salió mal!');

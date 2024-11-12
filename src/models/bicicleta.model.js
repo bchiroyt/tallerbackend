@@ -53,7 +53,7 @@ const getAll = async (categoriaId = null, busqueda = '', ordenId = 'asc', ordenN
   return rows;
 };
 
-// Obtener una bicicleta por ID
+// Obtener una bicicleta 
 const findById = async (id) => {
   const query = {
     text: `
@@ -68,7 +68,7 @@ const findById = async (id) => {
   return rows[0];
 };
 
-// Actualizar una bicicleta por ID
+// Actualizar una bicicleta
 const updateById = async (id, { id_categoria, codigo, nombre, marca, modelo, precio_costo, precio_venta, stock, imagen, tipo_bicicleta }) => {
   const query = {
     text: `
@@ -105,17 +105,8 @@ const updateById = async (id, { id_categoria, codigo, nombre, marca, modelo, pre
   return rows[0];
 };
 
-// Eliminar una bicicleta por ID
-const deleteById = async (id) => {
-  const query = {
-    text: `DELETE FROM taller.bicicletas WHERE id_bicicleta = $1`,
-    values: [id]
-  };
-  await db.query(query);
-  return true;
-};
 
-// Cambiar el estado de una bicicleta por ID
+// Cambiar el estado de una bicicleta
 const cambiarEstadoById = async (id, estado) => {
   const query = {
     text: `UPDATE taller.bicicletas SET estado = $1 WHERE id_bicicleta = $2 RETURNING *`,
@@ -127,7 +118,7 @@ const cambiarEstadoById = async (id, estado) => {
 
 // buscar por codigo o nombre
 const buscar = async (termino) => {
-  // Primero intentamos buscar por código exacto
+
   const queryByCodigo = {
     text: `
       SELECT 
@@ -145,7 +136,7 @@ const buscar = async (termino) => {
   
   let result = await db.query(queryByCodigo);
   
-  // Si no encontramos por código exacto, buscamos por nombre
+
   if (result.rows.length === 0) {
     const queryByNombre = {
       text: `
@@ -191,7 +182,6 @@ export const BicicletaModel = {
   getAll,
   findById,
   updateById,
-  deleteById,
   cambiarEstadoById,
   buscar,
   updateStockAndPrices

@@ -62,16 +62,6 @@ const findById = async (id) => {
   return rows[0];
 };
 
-// Eliminar un cliente por ID (eliminación física)
-const deleteById = async (id) => {
-  const query = {
-    text: `DELETE FROM taller.clientes WHERE id_cliente = $1`,
-    values: [id]
-  };
-  const result = await db.query(query);
-  return result.rowCount > 0;
-};
-
 // Buscar cliente por NIT
 const findByNit = async (nit) => {
   const query = {
@@ -90,7 +80,6 @@ export const ClienteModel = {
   findById,
   updateById,
   estadoCliente,
-  deleteById,
   getAll,
   findByNit
 };

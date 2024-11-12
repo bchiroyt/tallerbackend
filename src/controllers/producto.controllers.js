@@ -30,10 +30,10 @@ const obtenerProductos = async (req, res) => {
   }
 };
 
-// Obtener un producto por ID
+// Obtener un producto
 const obtenerProducto = async (req, res) => {
   try {
-    const { id } = req.params; // Asegúrate de que 'id' sea un número entero
+    const { id } = req.params;
     if (isNaN(id)) {
       return res.status(400).json({ ok: false, msg: 'El ID debe ser un número entero' });
     }
@@ -48,19 +48,19 @@ const obtenerProducto = async (req, res) => {
   }
 };
 
-// Actualizar un producto por ID
+// Actualizar un producto
 const actualizarProducto = async (req, res) => {
   try {
     const { id } = req.params;
     const { id_categoria, codigo, nombre, precio_costo, precio_venta, stock, marca, descripcion } = req.body;
 
-    // Obtener el producto actual
+    
     const productoActual = await ProductoModel.findById(id);
     if (!productoActual) {
       return res.status(404).json({ ok: false, msg: "Producto no encontrado" });
     }
 
-    // Crear un objeto con los campos actualizados
+   
     const productoActualizado = {
       id_categoria: id_categoria || productoActual.id_categoria,
       codigo: codigo || productoActual.codigo,
@@ -70,7 +70,7 @@ const actualizarProducto = async (req, res) => {
       stock: stock || productoActual.stock,
       marca: marca || productoActual.marca,
       descripcion: descripcion || productoActual.descripcion,
-      imagen: req.file ? '/uploads/' + path.basename(req.file.path) : productoActual.imagen // Mantiene la imagen existente si no se proporciona una nueva
+      imagen: req.file ? '/uploads/' + path.basename(req.file.path) : productoActual.imagen 
     };
 
     const resultado = await ProductoModel.updateById(id, productoActualizado);
@@ -81,28 +81,13 @@ const actualizarProducto = async (req, res) => {
   }
 };
 
-// Eliminar un producto por ID
-const eliminarProducto = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await ProductoModel.deleteById(id);
-    if (!result) {
-      return res.status(404).json({ ok: false, msg: "Producto no encontrado" });
-    }
-    return res.sendStatus(204); // Eliminación exitosa
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ ok: false, msg: 'Error del servidor al eliminar el producto' });
-  }
-};
-
-// Cambiar el estado de un producto por ID
+// Cambiar el estado de un producto
 const cambiarEstadoProducto = async (req, res) => {
   try {
     const { id } = req.params;
-    const { estado } = req.body; // Espera un booleano (true o false)
+    const { estado } = req.body;
 
-    // Verifica que el estado sea un booleano
+ 
     if (typeof estado !== 'boolean') {
       return res.status(400).json({ ok: false, msg: 'El estado debe ser un valor booleano (true o false)' });
     }
@@ -158,7 +143,6 @@ export const ProductoController = {
   obtenerProductos,
   obtenerProducto,
   actualizarProducto,
-  eliminarProducto,
   cambiarEstadoProducto,
   buscarProductos
 };

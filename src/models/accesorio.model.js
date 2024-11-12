@@ -31,7 +31,7 @@ const getAll = async (categoriaId = null, busqueda = '', ordenId = 'asc', ordenN
   return rows;
 };
 
-// Obtener un accesorio por ID
+// Obtener un accesorio
 const findById = async (id) => {
   const query = {
     text: `
@@ -46,7 +46,7 @@ const findById = async (id) => {
   return rows[0];
 };
 
-// Actualizar un accesorio por ID
+// Actualizar un accesorio
 const updateById = async (id, { id_categoria, codigo_barra, nombre, material, precio_costo, precio_venta, stock, imagen }) => {
   const query = {
     text: `
@@ -61,17 +61,9 @@ const updateById = async (id, { id_categoria, codigo_barra, nombre, material, pr
   return rows[0];
 };
 
-// Eliminar un accesorio por ID
-const deleteById = async (id) => {
-  const query = {
-    text: `DELETE FROM taller.accesorios WHERE id_accesorio = $1`,
-    values: [id]
-  };
-  await db.query(query);
-  return true;
-};
 
-// Cambiar el estado de un accesorio por ID
+
+// Cambiar el estado de un accesorio
 const cambiarEstadoById = async (id, estado) => {
   const query = {
     text: `UPDATE taller.accesorios SET estado_acce = $1 WHERE id_accesorio = $2 RETURNING *`,
@@ -83,7 +75,7 @@ const cambiarEstadoById = async (id, estado) => {
 
 // buscar por codigo o nombre
 const buscar = async (termino) => {
-  // Primero intentamos buscar por código exacto
+
   const queryByCodigo = {
     text: `
       SELECT 
@@ -101,7 +93,7 @@ const buscar = async (termino) => {
   
   let result = await db.query(queryByCodigo);
   
-  // Si no encontramos por código exacto, buscamos por nombre
+
   if (result.rows.length === 0) {
     const queryByNombre = {
       text: `
@@ -123,7 +115,6 @@ const buscar = async (termino) => {
   return result.rows[0];
 };
 
-//actualizar de parte de compras
 const updateStockAndPrices = async (id_accesorio, cantidad, precio_costo, precio_venta) => {
   const query = {
     text: `
@@ -147,7 +138,6 @@ export const AccesorioModel = {
   getAll,
   findById,
   updateById,
-  deleteById,
   cambiarEstadoById,
   buscar,
   updateStockAndPrices

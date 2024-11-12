@@ -83,20 +83,7 @@ const estadosCliente = async (req, res) => {
   }
 };
 
-// Eliminar un cliente por ID (eliminación física)
-const eliminarCliente = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await ClienteModel.deleteById(id);
-    if (!result) {
-      return res.status(404).json({ ok: false, msg: "Cliente no encontrado" });
-    }
-    return res.sendStatus(204); // Eliminación exitosa
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ ok: false, msg: 'Error del servidor al eliminar el cliente' });
-  }
-};
+
 
 const buscarClientePorNit = async (req, res) => {
   try {
@@ -130,6 +117,5 @@ export const ClienteController = {
   obtenerCliente,
   actualizarCliente,
   estadosCliente,
-  eliminarCliente,
   buscarClientePorNit
 };

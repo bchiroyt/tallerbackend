@@ -44,8 +44,7 @@ router.post('/productos', verifyToken, upload.single('imagen'), ProductoControll
 router.get('/productos', verifyToken, ProductoController.obtenerProductos);  
 router.get('/productos/buscar', verifyToken, ProductoController.buscarProductos);
 router.get('/productos/:id', verifyToken, ProductoController.obtenerProducto);
-router.put('/productos/:id', verifyToken, upload.single('imagen'), ProductoController.actualizarProducto);  
-router.delete('/productos/:id', verifyToken, ProductoController.eliminarProducto);  
+router.put('/productos/:id', verifyToken, upload.single('imagen'), ProductoController.actualizarProducto);
 router.patch('/productos/:id/estado', verifyToken, ProductoController.cambiarEstadoProducto); 
 
 
