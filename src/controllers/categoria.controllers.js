@@ -23,7 +23,7 @@ const obtenerCategorias = async (req, res) => {
   }
 }; 
 
-// Obtener una categoría por ID
+// Obtener una categoria
 const obtenerCategoria = async (req, res) => {
   try {
     const { id } = req.params;
@@ -38,7 +38,7 @@ const obtenerCategoria = async (req, res) => {
   }
 };
 
-// Actualizar una categoría por ID
+// Actualizar una categoria
 const actualizarCategoria = async (req, res) => {
   try {
     const { id } = req.params;
@@ -54,7 +54,7 @@ const actualizarCategoria = async (req, res) => {
   }
 };
 
-// Cambiar el estado de una categoría por ID (eliminación lógica)
+// Cambiar el estado de una categoria
 const estadosCategoria = async (req, res) => {
   try {
     const { id } = req.params;
@@ -109,7 +109,7 @@ const estadosCategoria = async (req, res) => {
   }
 };
 
-// Eliminar una categoría por ID (eliminación física)
+// Eliminar una categoria
 const eliminarCategoria = async (req, res) => {
   try {
     const { id } = req.params;

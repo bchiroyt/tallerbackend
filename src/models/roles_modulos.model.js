@@ -1,6 +1,6 @@
 import { db } from '../database/database.js';
 
-// Asignar un módulo a un rol
+// Asignar un modulo a un rol
 const asignarModulo = async (id_rol, id_modulo) => {
   const query = {
     text: `INSERT INTO taller.roles_modulos (id_rol, id_modulo) VALUES ($1, $2)`,
@@ -9,7 +9,7 @@ const asignarModulo = async (id_rol, id_modulo) => {
   await db.query(query);
 };
 
-// Desasignar un módulo de un rol
+// Desasignar un mdulo de un rol
 const desasignarModulo = async (id_rol, id_modulo) => {
   const query = {
     text: `DELETE FROM taller.roles_modulos WHERE id_rol = $1 AND id_modulo = $2`,

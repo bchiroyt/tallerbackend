@@ -14,11 +14,11 @@ export const generarPDF = async (venta, detalles, cliente) => {
     doc.text(`No. Comprobante: ${venta.numero_comprobante || 'N/A'}`, 20, 40);
     doc.text(`Fecha: ${new Date(venta.fecha_venta).toLocaleString()}`, 20, 50);
     
-    // Información del cliente
+    // Informaci del cliente
     doc.text(`Cliente: ${cliente?.nombre || 'Consumidor Final'}`, 20, 60);
     doc.text(`NIT: ${cliente?.nit || 'C/F'}`, 20, 70);
     
-    // Tabla de productos
+    // Tabla de producto
     const headers = [['Descripción', 'Cantidad', 'Precio Unit.', 'Subtotal']];
     const data = detalles.map(item => [
       item.nombre || `${item.tipo_item} ${item.id_item}`,
@@ -42,7 +42,7 @@ export const generarPDF = async (venta, detalles, cliente) => {
     doc.text(`Efectivo: Q${Number(venta.monto_recibido).toFixed(2)}`, 150, finalY + 10);
     doc.text(`Cambio: Q${Number(venta.cambio).toFixed(2)}`, 150, finalY + 20);
     
-    // Pie de página
+    
     doc.setFontSize(10);
     doc.text('Gracias por su compra', 105, finalY + 40, { align: 'center' });
     

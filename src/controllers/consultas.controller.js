@@ -4,7 +4,7 @@ const getAllVentas = async (req, res) => {
     try {
         let { fechaInicio, fechaFin, comprobante } = req.query;
         
-        // Fechas por defecto si no se proporcionan
+        
         if (!fechaInicio) {
             const fecha = new Date();
             fecha.setMonth(fecha.getMonth() - 1);
@@ -33,7 +33,7 @@ const getAllCompras = async (req, res) => {
     try {
         let { fechaInicio, fechaFin, comprobante } = req.query;
         
-        // Fechas por defecto si no se proporcionan
+        
         if (!fechaInicio) {
             const fecha = new Date();
             fecha.setMonth(fecha.getMonth() - 1);

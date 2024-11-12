@@ -5,11 +5,10 @@ const crearReembolso = async (req, res) => {
   try {
     const reembolsoData = {
       ...req.body,
-      // Cambiamos req.usuario.id por req.usuario.id_usuario
+      
       id_usuario: req.usuario.id_usuario
     };
 
-    // Validaciones básicas
     if (!reembolsoData.id_venta || !reembolsoData.items || !reembolsoData.items.length) {
       return res.status(400).json({
         ok: false,

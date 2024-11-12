@@ -1,6 +1,6 @@
 import { db } from '../database/database.js';
 
-// Crear un nuevo cliente
+// Crear un nuevo clente
 const create = async({ nit, nombre, email, direccion, telefono }) => {
     const query = {
       text: `
@@ -14,7 +14,7 @@ const create = async({ nit, nombre, email, direccion, telefono }) => {
     return rows[0];
   }; 
 
-// Actualizar un cliente por ID
+// Actualizar un cliente 
 const updateById = async (id, { nit, nombre, email, direccion, telefono, estado_cli }) => {
   const query = {
     text: `
@@ -35,7 +35,7 @@ const updateById = async (id, { nit, nombre, email, direccion, telefono, estado_
 };
   
 
-// Cambiar el estado de un cliente por ID (eliminación lógica)
+// Cambiar el estado 
 const estadoCliente = async (id, estado_cli) => {
   const query = {
     text: `UPDATE taller.clientes SET estado_cli = $1 WHERE id_cliente = $2`,
@@ -45,14 +45,14 @@ const estadoCliente = async (id, estado_cli) => {
   return result.rowCount > 0;
 };
 
-// Obtener todos los clientes (incluyendo desactivados)
+// Obtener todos los clientes
 const getAll = async () => {
   const query = `SELECT * FROM taller.clientes`;
   const { rows } = await db.query(query);
   return rows;
 };
 
-// Buscar un cliente por ID
+// Buscar un cliente
 const findById = async (id) => {
   const query = {
     text: `SELECT * FROM taller.clientes WHERE id_cliente = $1`,
@@ -62,7 +62,7 @@ const findById = async (id) => {
   return rows[0];
 };
 
-// Buscar cliente por NIT
+// Buscar cliente por NIt
 const findByNit = async (nit) => {
   const query = {
     text: `

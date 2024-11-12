@@ -79,11 +79,7 @@ const buscar = async (termino) => {
   const queryByCodigo = {
     text: `
       SELECT 
-        a.id_accesorio as id,
-        a.nombre,
-        a.stock,
-        a.precio_costo,
-        a.precio_venta
+        a.id_accesorio as id, a.nombre, a.stock, a.precio_costo, a.precio_venta
       FROM taller.accesorios a
       WHERE a.codigo_barra = $1
       LIMIT 1
@@ -97,12 +93,7 @@ const buscar = async (termino) => {
   if (result.rows.length === 0) {
     const queryByNombre = {
       text: `
-        SELECT 
-          a.id_accesorio as id,
-          a.nombre,
-          a.stock,
-          a.precio_costo,
-          a.precio_venta
+        SELECT a.id_accesorio as id, a.nombre, a.stock, a.precio_costo, a.precio_venta
         FROM taller.accesorios a
         WHERE a.nombre ILIKE $1
         LIMIT 1

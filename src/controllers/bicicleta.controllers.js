@@ -9,30 +9,13 @@ const crearBicicleta = async (req, res) => {
     }
 
     const { 
-      id_categoria, 
-      codigo, 
-      nombre, 
-      marca, 
-      modelo, 
-      precio_costo, 
-      precio_venta, 
-      stock, 
-      tipo_bicicleta 
+      id_categoria, codigo, nombre, marca, modelo, precio_costo, precio_venta, stock, tipo_bicicleta 
     } = req.body;
     
     const imagen = '/uploads/' + path.basename(req.file.path);
     
     const nuevaBicicleta = await BicicletaModel.create({ 
-      id_categoria, 
-      codigo, 
-      nombre, 
-      marca, 
-      modelo, 
-      precio_costo, 
-      precio_venta, 
-      stock, 
-      imagen, 
-      tipo_bicicleta 
+      id_categoria, codigo, nombre, marca, modelo, precio_costo, precio_venta, stock, imagen, tipo_bicicleta 
     });
     
     return res.status(201).json({ 
@@ -53,8 +36,8 @@ const crearBicicleta = async (req, res) => {
 // Obtener todas las bicicletas
 const obtenerBicicletas = async (req, res) => {
   try {
-    const { categoriaId, busqueda, ordenId = 'asc', ordenNombre = 'asc' } = req.query; // Obtener parámetros de consulta
-    const bicicletas = await BicicletaModel.getAll(categoriaId, busqueda, ordenId, ordenNombre); // Pasar parámetros a la función del modelo
+    const { categoriaId, busqueda, ordenId = 'asc', ordenNombre = 'asc' } = req.query; 
+    const bicicletas = await BicicletaModel.getAll(categoriaId, busqueda, ordenId, ordenNombre); 
     return res.json({ ok: true, bicicletas });
   } catch (error) {
     console.log(error);
@@ -82,15 +65,7 @@ const actualizarBicicleta = async (req, res) => {
   try {
     const { id } = req.params;
     const { 
-      id_categoria, 
-      codigo, 
-      nombre, 
-      marca, 
-      modelo, 
-      precio_costo, 
-      precio_venta, 
-      stock, 
-      tipo_bicicleta 
+      id_categoria, codigo, nombre, marca, modelo, precio_costo, precio_venta, stock, tipo_bicicleta 
     } = req.body;
 
     const bicicletaActual = await BicicletaModel.findById(id);

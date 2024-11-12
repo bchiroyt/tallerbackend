@@ -5,7 +5,7 @@ const crearReembolso = async (reembolsoData) => {
   try {
     await client.query('BEGIN');
 
-    // 1. Insertar el reembolso principal
+    // 1 Insertar el reembolso principal
     const reembolsoQuery = {
       text: `
         INSERT INTO taller.reembolsos 
@@ -23,9 +23,9 @@ const crearReembolso = async (reembolsoData) => {
 
     const { rows: [reembolso] } = await client.query(reembolsoQuery);
 
-    // 2. Procesar cada item del reembolso
+    // 2 Procesar cada item del reembolso, verifiacr
     for (const item of reembolsoData.items) {
-      // Validar que la cantidad a reembolsar no exceda la disponible
+      
       const checkCantidadQuery = {
         text: `
           SELECT cantidad, COALESCE(cantidad_reembolsada, 0) as cantidad_reembolsada
@@ -42,7 +42,7 @@ const crearReembolso = async (reembolsoData) => {
         throw new Error('Cantidad a reembolsar excede la disponible');
       }
 
-      // Insertar detalle del reembolso
+      // inserta el reembolso
       const detalleQuery = {
         text: `
           INSERT INTO taller.detalle_reembolso
@@ -59,14 +59,14 @@ const crearReembolso = async (reembolsoData) => {
       };
       await client.query(detalleQuery);
 
-      // Actualizar cantidad_reembolsada en detalle_venta
+      // Actualizar cantidadd reembolsada en detalle_venta
       await client.query(`
         UPDATE taller.detalle_venta
         SET cantidad_reembolsada = COALESCE(cantidad_reembolsada, 0) + $1
         WHERE id_detalle = $2
       `, [item.cantidad_reembolsada, item.id_detalle_venta]);
 
-      // Actualizar stock si no es servicio
+     
       if (item.tipo_item !== 'servicio') {
         const tabla = item.tipo_item === 'bicicleta' ? 'taller.bicicletas' :
                      item.tipo_item === 'accesorio' ? 'taller.accesorios' :

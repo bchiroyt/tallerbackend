@@ -1,7 +1,7 @@
 import { ProductoModel } from "../models/producto.model.js";
 import path from 'path';
 
-// Crear un nuevo producto
+// crear un nuevo producto
 const crearProducto = async (req, res) => {
   try {
     if (!req.file) {
@@ -9,7 +9,7 @@ const crearProducto = async (req, res) => {
     }
 
     const { id_categoria, codigo, nombre, precio_costo, precio_venta, stock, marca, descripcion } = req.body;
-    const imagen = '/uploads/' + path.basename(req.file.path); // Guardamos la ruta relativa
+    const imagen = '/uploads/' + path.basename(req.file.path); 
     const nuevoProducto = await ProductoModel.create({ id_categoria, codigo, nombre, precio_costo, precio_venta, stock, marca, descripcion, imagen });
     return res.status(201).json({ ok: true, msg: 'Producto creado exitosamente', producto: nuevoProducto });
   } catch (error) {
@@ -18,11 +18,11 @@ const crearProducto = async (req, res) => {
   }
 };
 
-// Obtener todos los productos
+// btener todos los productos
 const obtenerProductos = async (req, res) => {
   try {
-    const { categoriaId, ordenId = 'asc', ordenNombre = 'asc' } = req.query; // Obtener parámetros de consulta
-    const productos = await ProductoModel.getAll(categoriaId, ordenId, ordenNombre); // Pasar parámetros a la función del modelo
+    const { categoriaId, ordenId = 'asc', ordenNombre = 'asc' } = req.query; 
+    const productos = await ProductoModel.getAll(categoriaId, ordenId, ordenNombre); 
     return res.json({ ok: true, productos });
   } catch (error) {
     console.log(error);
@@ -30,7 +30,7 @@ const obtenerProductos = async (req, res) => {
   }
 };
 
-// Obtener un producto
+// Obener un producto
 const obtenerProducto = async (req, res) => {
   try {
     const { id } = req.params;
@@ -48,7 +48,7 @@ const obtenerProducto = async (req, res) => {
   }
 };
 
-// Actualizar un producto
+// actualizar un producto
 const actualizarProducto = async (req, res) => {
   try {
     const { id } = req.params;
@@ -81,7 +81,7 @@ const actualizarProducto = async (req, res) => {
   }
 };
 
-// Cambiar el estado de un producto
+// cambiar el estado de un producto
 const cambiarEstadoProducto = async (req, res) => {
   try {
     const { id } = req.params;

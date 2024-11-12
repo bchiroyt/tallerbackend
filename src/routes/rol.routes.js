@@ -1,4 +1,3 @@
-
 import { Router } from "express";
 import { RolController } from "../controllers/rol.controllers.js";
 import { verifyToken } from "../middlewares/jwt.middleware.js";

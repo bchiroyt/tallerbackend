@@ -1,6 +1,6 @@
 import { VentaModel } from '../models/venta.model.js';
 import { generarPDF } from '../utils/pdf.generator.js';
-import fs from 'fs';  // Cambiado a importación de fs normal
+import fs from 'fs'; 
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -11,11 +11,11 @@ const crearVenta = async (req, res) => {
   try {
     const ventaData = {
       ...req.body,
-      // Cambiamos req.usuario.id por req.usuario.id_usuario
+      
       id_usuario: req.usuario.id_usuario
     };
 
-    // Validaciones iniciales
+    
     if (!ventaData.id_caja) {
       return res.status(400).json({
         ok: false,
@@ -23,19 +23,19 @@ const crearVenta = async (req, res) => {
       });
     }
 
-    // Crear la venta
+    
     const venta = await VentaModel.crearVenta(ventaData);
 
-    // Obtener detalles completos de la venta
+    
     const detallesVenta = await VentaModel.obtenerDetallesVenta(venta.id_venta);
     const clienteInfo = ventaData.id_cliente ? 
       await VentaModel.obtenerCliente(ventaData.id_cliente) : null;
 
     try {
-      // Generar PDF
+      
       const pdfBuffer = await generarPDF(venta, detallesVenta, clienteInfo);
       
-      // Crear directorio si no existe
+      
       const pdfDir = path.join(__dirname, '..', '..', 'uploads', 'pdfs');
       if (!fs.existsSync(pdfDir)) {
         fs.mkdirSync(pdfDir, { recursive: true });
@@ -44,10 +44,10 @@ const crearVenta = async (req, res) => {
       const pdfFileName = `venta-${venta.numero_comprobante}.pdf`;
       const pdfPath = path.join(pdfDir, pdfFileName);
       
-      // Guardar PDF
+      
       fs.writeFileSync(pdfPath, Buffer.from(pdfBuffer));
       
-      // Actualizar URL del PDF en la base de datos
+      
       const pdfUrl = `/uploads/pdfs/${pdfFileName}`;
       await VentaModel.actualizarPdfUrl(venta.id_venta, pdfUrl);
 

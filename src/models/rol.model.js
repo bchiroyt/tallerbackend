@@ -18,7 +18,7 @@ const create = async ({ nombre, descripcion }) => {
   return rows[0];
 };
 
-// Eliminar un rol por ID
+// Eliminar un rol
 const deleteById = async (id_rol) => {
   const query = {
     text: `DELETE FROM taller.roles WHERE id_rol = $1`,

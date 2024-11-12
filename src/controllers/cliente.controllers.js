@@ -3,7 +3,7 @@ import { ClienteModel } from "../models/cliente.model.js";
 // Crear un nuevo cliente
 const crearCliente = async (req, res) => {
     try {
-      const { nit, nombre, email, direccion, telefono } = req.body; // Agregar nit aquí
+      const { nit, nombre, email, direccion, telefono } = req.body;
       const nuevoCliente = await ClienteModel.create({ nit, nombre, email, direccion, telefono });
       return res.status(201).json({ ok: true, msg: 'Cliente creado exitosamente', cliente: nuevoCliente });
     } catch (error) {
@@ -44,20 +44,20 @@ const actualizarCliente = async (req, res) => {
     const { id } = req.params;
     const { nit, nombre, email, direccion, telefono } = req.body;
     
-    // Primero obtener el cliente actual para mantener su estado
+  
     const clienteActual = await ClienteModel.findById(id);
     if (!clienteActual) {
       return res.status(404).json({ ok: false, msg: "Cliente no encontrado" });
     }
 
-    // Usar el estado actual del cliente
+  
     const clienteActualizado = await ClienteModel.updateById(id, { 
       nit, 
       nombre, 
       email, 
       direccion, 
       telefono, 
-      estado_cli: clienteActual.estado_cli // Mantener el estado actual
+      estado_cli: clienteActual.estado_cli 
     });
 
     return res.json({ ok: true, msg: 'Cliente actualizado exitosamente', cliente: clienteActualizado });
@@ -67,7 +67,7 @@ const actualizarCliente = async (req, res) => {
   }
 };
 
-// Cambiar el estado de un cliente por ID (eliminación lógica)
+// Cambiar el estado de un cliente 
 const estadosCliente = async (req, res) => {
   try {
     const { id } = req.params;
@@ -83,7 +83,7 @@ const estadosCliente = async (req, res) => {
   }
 };
 
-
+//buscar cliente por nit
 
 const buscarClientePorNit = async (req, res) => {
   try {

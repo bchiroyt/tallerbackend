@@ -1,6 +1,6 @@
 import { MantenimientoModel } from "../models/mantenimiento.model.js";
 
-// Crear una nueva cita de mantenimiento
+// Crear una nueva cita 
 const crearCita = async (req, res) => {
   try {
     const nuevaCita = await MantenimientoModel.crearCita(req.body);
@@ -11,7 +11,7 @@ const crearCita = async (req, res) => {
   }
 };
 
-// Obtener todas las citas de mantenimiento
+// Obtener todas las citas 
 const obtenerCitas = async (req, res) => {
   try {
     const citas = await MantenimientoModel.obtenerCitas();
@@ -22,7 +22,7 @@ const obtenerCitas = async (req, res) => {
   }
 };
 
-// Obtener una cita de mantenimiento por ID
+// Obtener una cita 
 const obtenerCitaPorId = async (req, res) => {
   try {
     const cita = await MantenimientoModel.obtenerCitaPorId(req.params.id);

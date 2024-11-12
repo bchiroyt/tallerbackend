@@ -2,7 +2,7 @@ import { db } from '../database/database.js';
 
 // Crear un nuevo registro de servicio
 const create = async ({ nombre_bicicleta, id_cita, fecha_mantenimiento, tipo_mantenimiento, descripcion_trabajos, precio_servicio }) => {
-  // Obtener el último código de servicio
+  
   const lastCodeQuery = {
     text: `
       SELECT codigo_servicio 
@@ -36,7 +36,7 @@ const getAll = async () => {
   return rows;
 };
 
-// Obtener un registro específico por ID
+// Obtener un registro 
 const getById = async (id) => {
   const query = {
     text: `SELECT * FROM taller.servicio WHERE id_historial = $1 AND estado_hist = TRUE;`,
@@ -46,7 +46,7 @@ const getById = async (id) => {
   return rows[0];
 };
 
-// Actualizar un registro de servicio
+// Actualizar un registro 
 const updateById = async (id, { codigo_servicio, nombre_bicicleta, fecha_mantenimiento, tipo_mantenimiento, descripcion_trabajos, precio_servicio }) => {
   const query = {
     text: `
@@ -61,7 +61,7 @@ const updateById = async (id, { codigo_servicio, nombre_bicicleta, fecha_manteni
   return rows[0];
 };
 
-// Eliminar un registro del servicio (eliminación lógica)
+// Eliminar un registro del servicio 
 const deleteById = async (id) => {
   const query = {
     text: `UPDATE taller.servicio SET estado_hist = FALSE WHERE id_historial = $1 RETURNING *;`,

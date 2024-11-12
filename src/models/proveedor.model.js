@@ -21,7 +21,7 @@ const getAll = async () => {
   return rows;
 };
 
-// Buscar un proveedor por ID
+// Buscar un proveedor 
 const findById = async (id) => {
   const query = {
     text: `SELECT * FROM taller.proveedores WHERE id_proveedor = $1`,
@@ -31,7 +31,7 @@ const findById = async (id) => {
   return rows[0];
 };
 
-// Actualizar un proveedor por ID
+// Actualizar un proveedor 
 const updateById = async (id, { nombre_compañia, persona_contacto, direccion, telefono, estado_prov }) => {
   const query = {
     text: `
@@ -46,7 +46,7 @@ const updateById = async (id, { nombre_compañia, persona_contacto, direccion, t
   return rows[0];
 };
 
-// Cambiar el estado de un proveedor por ID (eliminación lógica)
+// Cambiar el estado de un proveedor 
 const estadoProveedor = async (id, estado_prov) => {
   const query = {
     text: `UPDATE taller.proveedores SET estado_prov = $1 WHERE id_proveedor = $2`,
@@ -56,7 +56,7 @@ const estadoProveedor = async (id, estado_prov) => {
   return result.rowCount > 0;
 };
 
-// Eliminar un proveedor por ID (eliminación física)
+// Eliminar
 const deleteById = async (id) => {
   const query = {
     text: `DELETE FROM taller.proveedores WHERE id_proveedor = $1`,

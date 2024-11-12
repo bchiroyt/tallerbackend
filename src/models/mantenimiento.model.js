@@ -1,6 +1,6 @@
 import { db } from '../database/database.js';
 
-// Crear una nueva cita de mantenimiento
+// Crear una nueva cita
 const crearCita = async ({ id_cliente, nombre_bicicleta, id_tecnico, fecha_cita, hora_cita, tipo_mantenimiento, estado_cita, observaciones }) => {
   const query = {
     text: `
@@ -15,7 +15,7 @@ const crearCita = async ({ id_cliente, nombre_bicicleta, id_tecnico, fecha_cita,
   return rows[0];
 };
 
-// Obtener todas las citas de mantenimiento
+// Obtener todas las citas 
 const obtenerCitas = async () => {
   const query = `
     SELECT c.*, cl.nombre AS nombre_cliente, u.nombre AS nombre_tecnico
@@ -28,7 +28,7 @@ const obtenerCitas = async () => {
   return rows;
 };
 
-// Obtener una cita de mantenimiento por ID
+// Obtener una cita 
 const obtenerCitaPorId = async (id) => {
   const query = {
     text: `SELECT * FROM taller.citas_mantenimiento WHERE id_cita = $1`,
@@ -38,7 +38,7 @@ const obtenerCitaPorId = async (id) => {
   return rows[0];
 };
 
-// Actualizar el estado de una cita de mantenimiento
+// Actualizar el estado
 const actualizarEstadoCita = async (id, estado_cita) => {
   const query = {
     text: `

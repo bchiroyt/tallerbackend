@@ -1,6 +1,6 @@
 import { db } from '../database/database.js';
 
-// Crear un nuevo usuario en la base de datos
+// Crear un nuevo usuario
 const create = async({ nombre, apellido, email, password, telefono, direccion, id_rol }) => {
   const query = {
     text: `
@@ -50,7 +50,7 @@ const getAll = async () => {
   return rows;
 };
 
-// Buscar un usuario por ID
+// Buscar un usuario 
 const findById = async (id) => {
   const query = {
     text: `
@@ -65,7 +65,7 @@ const findById = async (id) => {
   return rows[0];
 };
 
-// Actualizar un usuario por ID
+// Actualizar un usuario 
 const updateById = async (id, { nombre, apellido, email, password, telefono, direccion, id_rol }) => {
   const query = {
     text: `

@@ -1,6 +1,6 @@
 import { ModuloModel } from "../models/modulo.model.js";
 
-// Obtener todos los módulos
+// Obtener todos los modulos
 const getAllModulos = async (req, res) => {
   try {
     const modulos = await ModuloModel.getAll();
@@ -11,7 +11,7 @@ const getAllModulos = async (req, res) => {
   }
 };
 
-// Crear un nuevo módulo
+// Crear un nuevo modulo
 const createModulo = async (req, res) => {
   try {
     const { nombre } = req.body;
@@ -23,7 +23,7 @@ const createModulo = async (req, res) => {
   }
 };
 
-// Eliminar un módulo
+// Eliminar un modulo
 const deleteModulo = async (req, res) => {
   try {
     const { id_modulo } = req.params;

@@ -1,6 +1,6 @@
 import { ProveedorModel } from "../models/proveedor.model.js";
 
-// Crear un nuevo proveedor
+// crear un nuevo proveedor
 const crearProveedor = async (req, res) => {
   try {
     const { nombre_compañia, persona_contacto, direccion, telefono } = req.body;
@@ -12,7 +12,7 @@ const crearProveedor = async (req, res) => {
   }
 };
 
-// Obtener todos los proveedores
+// obtener todos los proveedores
 const obtenerProveedores = async (req, res) => {
   try {
     const proveedores = await ProveedorModel.getAll();
@@ -23,7 +23,7 @@ const obtenerProveedores = async (req, res) => {
   }
 };
 
-// Obtener un proveedor por ID
+// Obtener un proveedor
 const obtenerProveedor = async (req, res) => {
   try {
     const { id } = req.params;
@@ -38,7 +38,7 @@ const obtenerProveedor = async (req, res) => {
   }
 };
 
-// Actualizar un proveedor por ID
+// actualizar un proveedor
 const actualizarProveedor = async (req, res) => {
   try {
     const { id } = req.params;
@@ -54,7 +54,7 @@ const actualizarProveedor = async (req, res) => {
   }
 };
 
-// Cambiar el estado de un proveedor por ID (eliminación lógica)
+// cambiar el estado de un proveedor
 const estadosProveedor = async (req, res) => {
   try {
     const { id } = req.params;
@@ -70,7 +70,7 @@ const estadosProveedor = async (req, res) => {
   }
 };
 
-// Eliminar un proveedor por ID (eliminación física)
+// Eliminar un proveedor
 const eliminarProveedor = async (req, res) => {
   try {
     const { id } = req.params;

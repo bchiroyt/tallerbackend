@@ -301,7 +301,7 @@ const obtenerVentaPorId = async (id_venta) => {
     
     return {
       ...venta,
-      items // Cambiado de detalles a items para mantener consistencia
+      items 
     };
   } finally {
     client.release();

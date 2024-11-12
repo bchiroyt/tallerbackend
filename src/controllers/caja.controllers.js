@@ -3,10 +3,8 @@ import { CajaModel } from '../models/caja.model.js';
 const abrirCaja = async (req, res) => {
   try {
     const { monto_inicial } = req.body;
-    // Modificar esta línea para usar id_usuario en lugar de id
     const id_usuario = req.usuario.id_usuario;
     
-    // Verificar que no haya una caja abierta
     const cajaActual = await CajaModel.getCajaActual();
     if (cajaActual) {
       return res.status(400).json({
@@ -16,8 +14,6 @@ const abrirCaja = async (req, res) => {
     }
     
     const caja = await CajaModel.abrirCaja({ id_usuario, monto_inicial });
-    
-    // Obtener la caja recién creada con todos los detalles
     const cajaCompleta = await CajaModel.getCajaActual();
     
     return res.status(201).json({
@@ -71,8 +67,7 @@ const obtenerCajaActual = async (req, res) => {
         msg: 'No hay una caja abierta actualmente'
       });
     }
-    
-    // Formatear la respuesta
+
     const cajaFormateada = {
       ...caja,
       fecha_apertura: new Date(caja.fecha_apertura).toLocaleString(),
@@ -98,7 +93,6 @@ const obtenerHistorial = async (req, res) => {
   try {
     let { fecha_inicio, fecha_fin } = req.query;
     
-    // Si no hay fechas, usar un rango amplio para mostrar todo
     if (!fecha_inicio || !fecha_fin) {
       const fechaActual = new Date();
       fecha_inicio = '2000-01-01';

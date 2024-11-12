@@ -1,6 +1,6 @@
 import { db } from '../database/database.js';
 
-// Crear una nueva categoría 
+// Crear una nueva categoria 
 const create = async({ nombre_categoria, descripcion }) => {
   const query = {
     text: `
@@ -14,7 +14,7 @@ const create = async({ nombre_categoria, descripcion }) => {
   return rows[0];
 }; 
 
-// Actualizar una categoría por ID
+// Actualizar una categoria
 const updateById = async (id, { nombre_categoria, descripcion, estado_cat }) => {
   const query = {
     text: `
@@ -29,13 +29,13 @@ const updateById = async (id, { nombre_categoria, descripcion, estado_cat }) => 
   return rows[0];
 };
 
-// Cambiar el estado de una categoría por ID (eliminación lógica)
+// Cambiar el estado
 const estadoCategoria = async (id, estado_cat) => {
   const client = await db.connect();
   try {
     await client.query('BEGIN');
 
-    // Verificar si la categoría existe
+    
     const categoriaExiste = await client.query(
       'SELECT * FROM taller.categorias WHERE id_categoria = $1',
       [id]
@@ -45,7 +45,7 @@ const estadoCategoria = async (id, estado_cat) => {
       throw new Error('Categoría no encontrada');
     }
 
-    // Actualizar el estado de la categoría
+    
     const categoriaQuery = {
       text: `UPDATE taller.categorias 
              SET estado_cat = $1 
@@ -61,7 +61,7 @@ const estadoCategoria = async (id, estado_cat) => {
       bicicletas: 0
     };
 
-    // Actualizar productos que tengan estado diferente
+    
     try {
       const updateProductos = await client.query(
         `UPDATE taller.productos 
@@ -75,7 +75,7 @@ const estadoCategoria = async (id, estado_cat) => {
       console.log('Tabla productos no encontrada o error:', error.message);
     }
 
-    // Actualizar accesorios que tengan estado diferente
+   
     try {
       const updateAccesorios = await client.query(
         `UPDATE taller.accesorios 
@@ -89,7 +89,7 @@ const estadoCategoria = async (id, estado_cat) => {
       console.log('Tabla accesorios no encontrada o error:', error.message);
     }
 
-    // Actualizar bicicletas que tengan estado diferente
+    
     try {
       const updateBicicletas = await client.query(
         `UPDATE taller.bicicletas 
@@ -158,14 +158,14 @@ const getItemsAfectados = async (client, id_categoria) => {
   return counts;
 };
 
-// Obtener todas las categorías (incluyendo desactivadas)
+// Obtener todas las categorias
 const getAll = async () => {
   const query = `SELECT * FROM taller.categorias`;
   const { rows } = await db.query(query);
   return rows;
 };
 
-// Buscar una categoría por ID
+// Buscar una categoria
 const findById = async (id) => {
   const query = {
     text: `SELECT * FROM taller.categorias WHERE id_categoria = $1`,
@@ -175,18 +175,18 @@ const findById = async (id) => {
   return rows[0];
 };
 
-// Eliminar una categoría por ID (eliminación física)
+// Eliminar una categoria
 const deleteById = async (id) => {
   const client = await db.connect();
   try {
     await client.query('BEGIN');
 
-    // Verificar si es la categoría por defecto (ID 1)
+    
     if (id === '1' || id === 1) {
       throw new Error('No se puede eliminar la categoría por defecto');
     }
 
-    // Verificar si la categoría existe
+    
     const categoriaExiste = await client.query(
       'SELECT id_categoria, nombre_categoria FROM taller.categorias WHERE id_categoria = $1',
       [id]
@@ -203,7 +203,7 @@ const deleteById = async (id) => {
       bicicletas: 0
     };
 
-    // Mover productos a la categoría por defecto
+    
     try {
       const productosMovidos = await client.query(
         `UPDATE taller.productos 
@@ -217,7 +217,7 @@ const deleteById = async (id) => {
       console.log('Nota: No se encontraron productos para mover');
     }
 
-    // Mover accesorios a la categoría por defecto
+    
     try {
       const accesoriosMovidos = await client.query(
         `UPDATE taller.accesorios 
@@ -231,7 +231,7 @@ const deleteById = async (id) => {
       console.log('Nota: No se encontraron accesorios para mover');
     }
 
-    // Mover bicicletas a la categoría por defecto
+    
     try {
       const bicicletasMovidas = await client.query(
         `UPDATE taller.bicicletas 
@@ -245,7 +245,7 @@ const deleteById = async (id) => {
       console.log('Nota: No se encontraron bicicletas para mover');
     }
 
-    // Eliminar la categoría
+    
     const result = await client.query(
       'DELETE FROM taller.categorias WHERE id_categoria = $1 RETURNING *',
       [id]

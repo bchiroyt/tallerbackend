@@ -60,7 +60,7 @@ const updateById = async (id, { id_categoria, codigo, nombre, precio_costo, prec
 };
 
 
-// Cambiar el estado de un producto
+// Cambiar el estado
 const cambiarEstadoById = async (id, estado) => {
   const query = {
     text: `UPDATE taller.productos SET estado = $1 WHERE id_producto = $2 RETURNING *`,

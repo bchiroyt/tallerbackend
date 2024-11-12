@@ -23,7 +23,7 @@ const obtenerServicios = async (req, res) => {
   }
 };
 
-// Obtener un servicio por ID
+// Obtener un servicio
 const obtenerServicioPorId = async (req, res) => {
   try {
     const { id } = req.params;
@@ -36,13 +36,13 @@ const obtenerServicioPorId = async (req, res) => {
   }
 };
 
-// Actualizar servicio
+// actualizar servicio
 const actualizarServicio = async (req, res) => {
   try {
     const { id } = req.params;
     const data = req.body;
 
-    // Validar que el código de servicio comience con '4'
+    
     if (data.codigo_servicio && !data.codigo_servicio.startsWith('4')) {
       return res.status(400).json({ ok: false, msg: 'El código de servicio debe comenzar con el número 4.' });
     }
@@ -56,7 +56,7 @@ const actualizarServicio = async (req, res) => {
   }
 };
 
-// Eliminar servicio (lógico)
+// Eliminar servicio
 const eliminarServicio = async (req, res) => {
   try {
     const { id } = req.params;

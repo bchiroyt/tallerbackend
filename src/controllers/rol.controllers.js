@@ -39,6 +39,6 @@ const deleteRol = async (req, res) => {
 
 export const RolController = {
   getAllRoles,
-  createRol,  // Añadir esta línea
-  deleteRol  // Añadir esta línea
+  createRol,  
+  deleteRol  
 };

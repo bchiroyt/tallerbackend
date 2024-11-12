@@ -6,7 +6,7 @@ const __dirname = path.resolve();
 
 const cleanupImages = () => {
   const directory = path.join(__dirname, 'uploads');
-  const expirationDays = 1; // Cambia esto al número de días que desees
+  const expirationDays = 1; 
   const expirationTime = Date.now() - expirationDays * 24 * 60 * 60 * 1000;
 
   fs.readdir(directory, (err, files) => {
@@ -28,5 +28,4 @@ const cleanupImages = () => {
   });
 };
 
-// Programar la limpieza cada día a la medianoche
 cron.schedule('0 0 * * *', cleanupImages);

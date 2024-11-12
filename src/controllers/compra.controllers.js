@@ -11,28 +11,27 @@ const __dirname = path.dirname(__filename);
 const generarPDF = async (compra, detalles, proveedor) => {
   const doc = new jsPDF();
   
-  // Configuración de la página
+
   doc.setFont('helvetica');
   doc.setFontSize(20);
   doc.text('COMPROBANTE DE COMPRA', 105, 20, { align: 'center' });
   
-  // Información del encabezado
   doc.setFontSize(12);
   doc.text('DESCUENTAZO-BIKE', 105, 30, { align: 'center' });
   doc.text('Caserio Centra Solola, Km 135', 105, 35, { align: 'center' });
   doc.text('Tel: (502) 5837 2669', 105, 40, { align: 'center' });
   
-  // Información de la compra
+
   doc.setFontSize(10);
   doc.text(`Compra No: ${compra.numero_comprobante}`, 15, 55);
   doc.text(`Fecha: ${new Date(compra.fecha_facturacion).toLocaleDateString()}`, 15, 60);
   doc.text(`Proveedor: ${proveedor.nombre_compañia}`, 15, 65);
   doc.text(`Comprobante: ${compra.tipo_comprobante} ${compra.serie}-${compra.numero_comprobante}`, 15, 70);
 
-  // Tabla de productos
+
   let y = 85;
   
-  // Encabezados de la tabla
+ 
   doc.setFillColor(240, 240, 240);
   doc.rect(15, y-5, 180, 7, 'F');
   doc.text('Producto', 45, y);
@@ -44,7 +43,7 @@ const generarPDF = async (compra, detalles, proveedor) => {
   
   y += 10;
 
-  // Detalles de productos
+
   detalles.forEach(detalle => {
     if (y > 250) {
       doc.addPage();
@@ -62,17 +61,17 @@ const generarPDF = async (compra, detalles, proveedor) => {
     y += 7;
   });
 
-  // Total
+  
   doc.setFontSize(12);
   doc.text(`Total: Q${Number(compra.total_compra).toFixed(2)}`, 170, y + 10);
 
-  // Crear directorio si no existe
+
   const pdfDir = path.join(__dirname, '..', '..', 'uploads', 'pdfs');
   if (!fs.existsSync(pdfDir)) {
     fs.mkdirSync(pdfDir, { recursive: true });
   }
 
-  // Guardar PDF
+
   const pdfName = `compra_${compra.id_compra}_${Date.now()}.pdf`;
   const pdfPath = path.join(pdfDir, pdfName);
   
@@ -114,7 +113,7 @@ const crearCompra = async (req, res) => {
       total_compra
     });
 
-    // Procesar detalles y obtener nombres
+   
     const detallesConNombres = [];
     for (const detalle of detalles) {
       const resultado = await CompraModel.addDetail({
@@ -127,10 +126,10 @@ const crearCompra = async (req, res) => {
       });
     }
 
-    // Obtener proveedor para el PDF
+   
     const proveedor = await ProveedorModel.findById(id_proveedor);
 
-    // Generar y guardar PDF
+    
     const pdfPath = await generarPDF(compra, detallesConNombres, proveedor);
     const compraActualizada = await CompraModel.updatePdfPath(compra.id_compra, pdfPath);
 
