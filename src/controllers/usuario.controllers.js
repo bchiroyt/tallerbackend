@@ -112,27 +112,40 @@ const actualizarUsuario = async (req, res) => {
     const { iduser } = req.params;
     const { nombre, apellido, email, password, telefono, direccion, id_rol } = req.body;
     
-    
-    let hashedPassword = password;
-    if (password) {
-      const salt = await bcryptjs.genSalt(10);
-      hashedPassword = await bcryptjs.hash(password, salt);
+    // Obtener usuario actual
+    const usuarioActual = await UserModel.findById(iduser);
+    if (!usuarioActual) {
+      return res.status(404).json({
+        ok: false,
+        msg: "Usuario no encontrado"
+      });
     }
 
-    const result = await UserModel.updateById(iduser, {
-      nombre,
-      apellido,
-      email,
-      password: hashedPassword,
-      telefono,
-      direccion,
-      id_rol
-    });
+    // Validar contraseña si se proporciona
+    if (password && password.length < 8) {
+      return res.status(400).json({
+        ok: false,
+        msg: "La contraseña debe tener al menos 8 caracteres"
+      });
+    }
+
+    // Preparar datos para actualización
+    const datosActualizados = {
+      nombre: nombre || usuarioActual.nombre,
+      apellido: apellido || usuarioActual.apellido,
+      email: email || usuarioActual.email,
+      password: password ? await bcryptjs.hash(password, await bcryptjs.genSalt(10)) : usuarioActual.password,
+      telefono: telefono || usuarioActual.telefono,
+      direccion: direccion || usuarioActual.direccion,
+      id_rol: id_rol || usuarioActual.id_rol // Aseguramos mantener el rol actual si no se proporciona uno nuevo
+    };
+
+    const result = await UserModel.updateById(iduser, datosActualizados);
 
     if (!result) {
       return res.status(404).json({
         ok: false,
-        msg: "Usuario no encontrado"
+        msg: "Error al actualizar el usuario"
       });
     }
 
