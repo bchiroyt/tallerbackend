@@ -55,7 +55,7 @@ const addDetail = async (detalleData) => {
   let id_accesorio = null;
   let id_bicicleta = null;
   
-  
+  // Asignar el ID al campo correcto según el tipo
   switch(tipo_producto) {
     case 'accesorio':
       id_accesorio = id_producto;
