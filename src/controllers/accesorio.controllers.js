@@ -4,12 +4,9 @@ import path from 'path';
 // Crear un nuevo accesorio
 const crearAccesorio = async (req, res) => {
     try {
-      if (!req.file) {
-        return res.status(400).json({ ok: false, msg: 'Error: No se ha subido ninguna imagen' });
-      }
-  
       const { id_categoria, codigo_barra, nombre, material, precio_costo, precio_venta, stock } = req.body;
-      const imagen = '/uploads/' + path.basename(req.file.path); 
+      const imagen = req.file ? '/uploads/' + path.basename(req.file.path) : '/uploads/default.png';
+      
       const nuevoAccesorio = await AccesorioModel.create({ id_categoria, codigo_barra, nombre, material, precio_costo, precio_venta, stock, imagen });
       return res.status(201).json({ ok: true, msg: 'Accesorio creado exitosamente', accesorio: nuevoAccesorio });
     } catch (error) {

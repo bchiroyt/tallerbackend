@@ -41,18 +41,25 @@ const actualizarServicio = async (req, res) => {
   try {
     const { id } = req.params;
     const data = req.body;
-
     
-    if (data.codigo_servicio && !data.codigo_servicio.startsWith('4')) {
-      return res.status(400).json({ ok: false, msg: 'El código de servicio debe comenzar con el número 4.' });
-    }
-
     const servicioActualizado = await ServicioModel.updateById(id, data);
-    if (!servicioActualizado) return res.status(404).json({ ok: false, msg: 'Servicio no encontrado' });
-    res.json({ ok: true, servicio: servicioActualizado });
+    if (!servicioActualizado) {
+      return res.status(404).json({ 
+        ok: false, 
+        msg: 'Servicio no encontrado' 
+      });
+    }
+    
+    res.json({ 
+      ok: true, 
+      servicio: servicioActualizado 
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ ok: false, msg: 'Error al actualizar servicio' });
+    res.status(500).json({ 
+      ok: false, 
+      msg: 'Error al actualizar servicio' 
+    });
   }
 };
 

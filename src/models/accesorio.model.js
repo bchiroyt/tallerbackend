@@ -4,9 +4,28 @@ import { db } from '../database/database.js';
 const create = async ({ id_categoria, codigo_barra, nombre, material, precio_costo, precio_venta, stock, imagen }) => {
   const query = {
     text: `
-    INSERT INTO taller.accesorios (id_categoria, codigo_barra, nombre, material, precio_costo, precio_venta, stock, imagen, estado_acce) 
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, TRUE)
-    RETURNING id_accesorio, (SELECT nombre_categoria FROM taller.categorias WHERE id_categoria = $1) AS nombre_categoria, codigo_barra, nombre, material, precio_costo, precio_venta, stock, imagen, estado_acce
+    INSERT INTO taller.accesorios (
+      id_categoria, 
+      codigo_barra, 
+      nombre, 
+      material, 
+      precio_costo, 
+      precio_venta, 
+      stock, 
+      imagen, 
+      estado_acce
+    ) 
+    VALUES ($1, $2, $3, $4, $5, $6, $7, COALESCE($8, '/uploads/default.png'), TRUE)
+    RETURNING id_accesorio, 
+      (SELECT nombre_categoria FROM taller.categorias WHERE id_categoria = $1) AS nombre_categoria, 
+      codigo_barra, 
+      nombre, 
+      material, 
+      precio_costo, 
+      precio_venta, 
+      stock, 
+      imagen, 
+      estado_acce
     `,
     values: [id_categoria, codigo_barra, nombre, material, precio_costo, precio_venta, stock, imagen]
   };

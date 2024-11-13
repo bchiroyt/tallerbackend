@@ -4,12 +4,9 @@ import path from 'path';
 // crear un nuevo producto
 const crearProducto = async (req, res) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ ok: false, msg: 'Error: No se ha subido ninguna imagen' });
-    }
-
     const { id_categoria, codigo, nombre, precio_costo, precio_venta, stock, marca, descripcion } = req.body;
-    const imagen = '/uploads/' + path.basename(req.file.path); 
+    const imagen = req.file ? '/uploads/' + path.basename(req.file.path) : '/uploads/default.png';
+    
     const nuevoProducto = await ProductoModel.create({ id_categoria, codigo, nombre, precio_costo, precio_venta, stock, marca, descripcion, imagen });
     return res.status(201).json({ ok: true, msg: 'Producto creado exitosamente', producto: nuevoProducto });
   } catch (error) {

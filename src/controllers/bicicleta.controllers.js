@@ -4,15 +4,12 @@ import path from 'path';
 // Crear una nueva bicicleta
 const crearBicicleta = async (req, res) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ ok: false, msg: 'Error: No se ha subido ninguna imagen' });
-    }
-
     const { 
       id_categoria, codigo, nombre, marca, modelo, precio_costo, precio_venta, stock, tipo_bicicleta 
     } = req.body;
     
-    const imagen = '/uploads/' + path.basename(req.file.path);
+    // Hacer la imagen opcional
+    const imagen = req.file ? '/uploads/' + path.basename(req.file.path) : '/uploads/default.png';
     
     const nuevaBicicleta = await BicicletaModel.create({ 
       id_categoria, codigo, nombre, marca, modelo, precio_costo, precio_venta, stock, imagen, tipo_bicicleta 

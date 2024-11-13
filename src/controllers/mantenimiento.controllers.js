@@ -46,9 +46,39 @@ const actualizarEstadoCita = async (req, res) => {
   }
 };
 
+// Agregar este controlador
+const actualizarCita = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const citaActualizada = await MantenimientoModel.actualizarCita(id, req.body);
+    
+    if (!citaActualizada) {
+      return res.status(404).json({ 
+        ok: false, 
+        msg: 'Cita no encontrada' 
+      });
+    }
+
+    res.json({ 
+      ok: true, 
+      msg: 'Cita actualizada exitosamente',
+      cita: citaActualizada 
+    });
+  } catch (error) {
+    console.error('Error al actualizar cita:', error);
+    res.status(500).json({ 
+      ok: false, 
+      msg: 'Error al actualizar la cita' 
+    });
+  }
+};
+
+
+
 export const MantenimientoController = {
   crearCita,
   obtenerCitas,
   obtenerCitaPorId,
+  actualizarCita,
   actualizarEstadoCita
 };
