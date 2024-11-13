@@ -39,12 +39,24 @@ const upload = multer({
   fileFilter 
 });
 
+// Crear un middleware que haga opcional la imagen
+const uploadOptional = (req, res, next) => {
+  upload.single('imagen')(req, res, function(err) {
+    if (err instanceof multer.MulterError) {
+      return res.status(400).json({ ok: false, msg: 'Error al subir la imagen' });
+    } else if (err) {
+      return res.status(500).json({ ok: false, msg: err.message });
+    }
+    next();
+  });
+};
 
-router.post('/accesorios', verifyToken, upload.single('imagen'), AccesorioController.crearAccesorio);  
+
+router.post('/accesorios', verifyToken, uploadOptional, AccesorioController.crearAccesorio);  
 router.get('/accesorios', verifyToken, AccesorioController.obtenerAccesorios);  
 router.get('/accesorios/buscar', verifyToken, AccesorioController.buscarAccesorios);
 router.get('/accesorios/:id', verifyToken, AccesorioController.obtenerAccesorio);
-router.put('/accesorios/:id', verifyToken, upload.single('imagen'), AccesorioController.actualizarAccesorio); 
+router.put('/accesorios/:id', verifyToken, uploadOptional, AccesorioController.actualizarAccesorio); 
 router.patch('/accesorios/:id/estado', verifyToken, AccesorioController.cambiarEstadoAccesorio);
 
  

@@ -20,12 +20,47 @@ const create = async ({ nombre, descripcion }) => {
 
 // Eliminar un rol
 const deleteById = async (id_rol) => {
-  const query = {
-    text: `DELETE FROM taller.roles WHERE id_rol = $1`,
-    values: [id_rol]
-  };
-  const result = await db.query(query);
-  return result.rowCount > 0;
+  try {
+    // Iniciar una transacción
+    await db.query('BEGIN');
+
+    // Actualizar usuarios al rol por defecto (id_rol = 1)
+    const updateUsersQuery = {
+      text: `
+        UPDATE taller.usuarios 
+        SET id_rol = 1 
+        WHERE id_rol = $1
+      `,
+      values: [id_rol]
+    };
+    await db.query(updateUsersQuery);
+
+    // Eliminar los permisos asociados al rol
+    const deletePermisosQuery = {
+      text: `
+        DELETE FROM taller.roles_modulos 
+        WHERE id_rol = $1
+      `,
+      values: [id_rol]
+    };
+    await db.query(deletePermisosQuery);
+
+    // Eliminar el rol
+    const deleteRolQuery = {
+      text: `DELETE FROM taller.roles WHERE id_rol = $1`,
+      values: [id_rol]
+    };
+    const result = await db.query(deleteRolQuery);
+
+    // Confirmar la transacción
+    await db.query('COMMIT');
+    
+    return result.rowCount > 0;
+  } catch (error) {
+    // Si hay error, revertir los cambios
+    await db.query('ROLLBACK');
+    throw error;
+  }
 };
 
 export const RolModel = {

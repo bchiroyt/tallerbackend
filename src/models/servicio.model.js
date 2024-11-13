@@ -47,15 +47,26 @@ const getById = async (id) => {
 };
 
 // Actualizar un registro 
-const updateById = async (id, { codigo_servicio, nombre_bicicleta, fecha_mantenimiento, tipo_mantenimiento, descripcion_trabajos, precio_servicio }) => {
+const updateById = async (id, { nombre_bicicleta, fecha_mantenimiento, tipo_mantenimiento, descripcion_trabajos, precio_servicio }) => {
   const query = {
     text: `
       UPDATE taller.servicio 
-      SET codigo_servicio = $1, nombre_bicicleta = $2, fecha_mantenimiento = $3, tipo_mantenimiento = $4, descripcion_trabajos = $5, precio_servicio = $6
-      WHERE id_historial = $7 
+      SET nombre_bicicleta = $1, 
+          fecha_mantenimiento = $2, 
+          tipo_mantenimiento = $3, 
+          descripcion_trabajos = $4, 
+          precio_servicio = $5
+      WHERE id_historial = $6 
       RETURNING *;
     `,
-    values: [codigo_servicio, nombre_bicicleta, fecha_mantenimiento, tipo_mantenimiento, descripcion_trabajos, precio_servicio, id]
+    values: [
+      nombre_bicicleta, 
+      fecha_mantenimiento, 
+      tipo_mantenimiento, 
+      descripcion_trabajos, 
+      precio_servicio, 
+      id
+    ]
   };
   const { rows } = await db.query(query);
   return rows[0];

@@ -53,9 +53,44 @@ const actualizarEstadoCita = async (id, estado_cita) => {
   return rows[0];
 };
 
+// Actualizar una cita
+const actualizarCita = async (id, { id_cliente, nombre_bicicleta, id_tecnico, fecha_cita, hora_cita, tipo_mantenimiento, estado_cita, observaciones }) => {
+  const query = {
+    text: `
+      UPDATE taller.citas_mantenimiento 
+      SET id_cliente = $1, 
+          nombre_bicicleta = $2, 
+          id_tecnico = $3, 
+          fecha_cita = $4, 
+          hora_cita = $5, 
+          tipo_mantenimiento = $6, 
+          estado_cita = $7, 
+          observaciones = $8
+      WHERE id_cita = $9
+      RETURNING *
+    `,
+    values: [
+      id_cliente, 
+      nombre_bicicleta, 
+      id_tecnico, 
+      fecha_cita, 
+      hora_cita, 
+      tipo_mantenimiento, 
+      estado_cita, 
+      observaciones, 
+      id
+    ]
+  };
+  const { rows } = await db.query(query);
+  return rows[0];
+};
+
+
+
 export const MantenimientoModel = {
   crearCita,
   obtenerCitas,
   obtenerCitaPorId,
-  actualizarEstadoCita,
+  actualizarCita,
+  actualizarEstadoCita
 };
