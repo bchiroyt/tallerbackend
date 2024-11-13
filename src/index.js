@@ -23,6 +23,7 @@ import cajaRouter from './routes/caja.routes.js';
 import reembolsoRouter from './routes/reembolso.routes.js'
 import reportesRouter from './routes/reportes.routes.js'
 import consultaRouter from './routes/consultas.routes.js'
+import manualRouter from './routes/manual.routes.js'
 
 
 console.log('JWT_SECRET está configurado:', !!process.env.JWT_SECRET);
@@ -61,7 +62,7 @@ app.use('/cajas', cajaRouter);
 app.use('/reembolsos', reembolsoRouter); 
 app.use('/reportes', reportesRouter);
 app.use('/consultas', consultaRouter);
-
+app.use('/', manualRouter);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
